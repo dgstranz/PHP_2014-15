@@ -14,13 +14,10 @@ if (!isset($_POST['arbol']) || !isset($_POST['tronco'])) {
 function pintar_arbol($arbol, $tronco) {
 	echo '<center>';
 	for ($i=1; $i < $arbol; $i++) {
-		for ($j=0; $j < $i; $j++) {
-			echo '*';
-		}
-		echo '<br>';
+		echo str_pad('', $i, '*') . '<br>';
 	}
 	for ($i=0; $i < $tronco; $i++) { 
-		echo '**<br>';
+		echo str_pad('', 2, '*') . '<br>';
 	}
 	echo '</center>';
 }
