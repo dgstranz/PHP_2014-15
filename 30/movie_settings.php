@@ -3,6 +3,8 @@
 define('IMG_FOLDER', 'img/');
 define('MAX_SIZE', 2500000);
 
+$movie_file = 'movies.csv';
+
 class Movie {
 	private $title;
 	private $image;
@@ -20,19 +22,29 @@ class Movie {
 	}
 }
 
-$movies = array(
-		new Movie('Alguien a quien amar', 'Alguien-a-quien-amar-2014.jpg'),
-		new Movie('Antes del frío invierno', 'antesdelfrioinvierno.jpg'),
-		new Movie('Black Coal', 'black-coal-espana.jpg'),
-		new Movie('Boyhood', 'boyhood-momentos-de-una-vida-espana.jpg'),
-		new Movie('Dioses y perros', 'dioses_y_perros.jpg'),
-		new Movie('La desaparición de Eleanor Rigby', 'la-desaparicion-de-eleanor-rigby-espana.jpg'),
-		new Movie('La gran seducción', 'lagranseducciona41_grande.jpg'),
-		new Movie('Magical Girl', 'Magical_Girl.jpg'),
-		new Movie('Slimane', 'Slimane.jpg'),
-		new Movie('Un viaje de diez metros', 'un-viaje-de-diez-metros-espana.jpg'),
-		new Movie('Viajo sola', 'viajo_sola.jpg'),
-		new Movie('Winter Sleep (Sueño de invierno)', 'winter_sleep.jpg')
-	);
+$movies = array();
+
+function load_movies() {
+	global $movie_file;
+	global $movies;
+	$handle = fopen($movie_file, "r");
+	$row = 1;
+	while (($data = fgetcsv($handle, 1000, ",", "'")) != false) {
+		array_push($movies, new Movie($data[0], $data[1]));
+		$row++;
+	}
+	fclose($handle);
+}
+
+load_movies($movie_file);
+
+function add_movie($movie_entry) {
+	global $movie_file;
+	global $movies;
+	$handle = fopen($movie_file, "a");
+	fwrite($handle, "'$movie_entry[0]','$movie_entry[1]'\n");
+	array_push($movies, new Movie($movie_entry[0], $movie_entry[1]));
+	fclose($handle);
+}
 
 ?>

@@ -10,19 +10,24 @@ include_once 'movie_settings.php';
 $error = '';
 $archivo_destino = '';
 
-if (!isset($_POST['titulo'])) {
-	if (isset($_FILES['cartel'])) {
-		echo '<b>Error</b>: Debe indicarse un título.<br>';
+if (!isset($_POST['submitted'])) {
+	formulario();
+} elseif (!isset($_POST['titulo']) || empty($_POST['titulo'])) {
+	echo '<b>Error</b>: Debe indicarse un título';
+
+	if (!isset($_FILES['cartel']) || empty($_FILES['cartel']['name'])) {
+		echo ' e incluirse un cartel';
 	}
 
+	echo '.<br>';
+
 	formulario();
-} elseif (!isset($_FILES['cartel'])) {
+} elseif (!isset($_FILES['cartel']) || empty($_FILES['cartel']['name'])) {
 	echo '<b>Error</b>: Debe incluirse un cartel.<br>';
 
 	formulario();
 } else {
 	$archivo_destino = IMG_FOLDER . basename($_FILES['cartel']['name']);
-	echo $archivo_destino;
 
 	if (!es_imagen($_FILES['cartel'])) {
 		echo $error;
@@ -30,19 +35,24 @@ if (!isset($_POST['titulo'])) {
 		formulario();
 	} elseif (!move_uploaded_file($_FILES['cartel']['tmp_name'], $archivo_destino)) {
 		echo 'Ha habido un error al tratar de subir el archivo.<br>';
+
+		formulario();
 	} else {
 		echo 'El archivo se ha subido correctamente.<br>';
-		array_push($movies, new Movie($_POST['titulo'], basename($_FILES['cartel']['name'])));
-		var_dump($movies);
+		$movie_entry = array($_POST['titulo'], basename($_FILES['cartel']['name']));
+		add_movie($movie_entry);
 	}
 }
 
+echo '<p><a href="movies.php">Ver cartelera</a></p>';
+
 function formulario() {
 	echo '<form action="' . $_SERVER['PHP_SELF'] . '" method="POST" enctype="multipart/form-data">';
+	echo '<input type="hidden" name="submitted" value="true">';
 	echo '<table>';
 	echo '	<tr>';
 	echo '		<td>Título:</td>';
-	echo '		<td><input type="text" name="titulo"></td>';
+	echo '		<td><input type="text" name="titulo"' . ((isset($_POST['titulo']) && !empty($_POST['titulo'])) ? ' value="' . $_POST['titulo'] . '"' : '') . '></td>';
 	echo '	</tr>';
 	echo '	<tr>';
 	echo '		<td>Cartel:</td>';
@@ -58,8 +68,6 @@ function formulario() {
 function es_imagen($archivo) {
 	global $error;
 	global $archivo_destino;
-
-	var_dump($archivo);
 
 	if (!isset($archivo['tmp_name']) || !isset($archivo['size'])) {
 		$error = '<b>Error</b>: No se ha subido ninguna imagen.<br>';
