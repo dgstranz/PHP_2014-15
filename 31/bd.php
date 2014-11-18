@@ -1,7 +1,7 @@
 <?php
 require_once 'config.php';
 
-$link = new mysqli(SERVER, USER, PASSWORD) or die('No se pudo establecer una conexión: ' . mysqli_connect_error());
+$conn = new mysqli(SERVER, USER, PASSWORD) or die('No se pudo establecer una conexión: ' . mysqli_connect_error());
 
 $db_create = "CREATE DATABASE IF NOT EXISTS libroBD
 	DEFAULT CHARACTER SET latin1 COLLATE latin1_spanish_ci";
@@ -13,9 +13,9 @@ $table_create = "CREATE TABLE IF NOT EXISTS libros (
 	PRIMARY KEY (id)
 ) CHARACTER SET latin1 COLLATE latin1_spanish_ci";
 
-$link->query($db_create) or die('Error al crear la base de datos: ' . $link->error);
+$conn->query($db_create) or die('Error al crear la base de datos: ' . $conn->error);
 
-$link->select_db('libroBD') or die('No se pudo establecer una conexión a la base de datos: ' . mysqli_connect_error());
+$conn->select_db('libroBD') or die('No se pudo establecer una conexión a la base de datos: ' . mysqli_connect_error());
 
-$link->query($table_create) or die ('Error al crear la tabla: ' . $link->error);
+$conn->query($table_create) or die ('Error al crear la tabla: ' . $conn->error);
 ?>
