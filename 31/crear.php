@@ -4,6 +4,7 @@
 </head>
 <body>
 <?php
+session_start();
 require_once('bd.php');
 
 if (!isset($_POST['titulo']) || !isset($_POST['autor'])) {
@@ -12,18 +13,9 @@ if (!isset($_POST['titulo']) || !isset($_POST['autor'])) {
 	echo '<b>Error</b>: Los campos no pueden estar vacíos.';
 	formulario();
 } else {
-	if (!$conn->set_charset('utf8')) {
-		printf("Error cargando el conjunto de caracteres UTF-8: %s\n", $conn->error);
-	}
-	if (existe()) {
-		echo 'El libro "' . $_POST['titulo'] . '" del autor ' . $_POST['autor']
-			. ' ya existe en la base de datos.';
-	} elseif (!insertar()) {
-		echo 'Error al tratar de introducir el libro en la base de datos: ' . $conn->error;
-	} else {
-		echo 'Libro introducido correctamente.';
-	}
-	echo '<p><a href="' . $_SERVER['PHP_SELF'] . '">Introducir nuevo libro</a></p>';
+	$_SESSION['titulo'] = $_POST['titulo'];
+	$_SESSION['autor'] = $_POST['autor'];
+	header('Location: procesar.php');
 }
 
 echo '<p><a href="index.php">Volver atrás</a></p>';
