@@ -6,6 +6,7 @@
 <?php
 session_start();
 require_once('bd.php');
+require_once('clases.php');
 
 var_dump($_POST);
 
@@ -13,14 +14,39 @@ if (!isset($_POST['titulo']) || !isset($_POST['genero']) || !isset($_POST['anyo'
 	formulario();
 } elseif (empty($_POST['titulo']) || empty($_POST['genero']) || empty($_POST['anyo']) || empty($_POST['protagonista']) || empty($_POST['director'])) {
 	echo '<b>Error</b>: Los campos no pueden estar vacíos.';
-	formulario();
+	formulario();/*
+} elseif (buscar_pelicula($_POST['titulo'])) {
+	echo '<b>Error</b>: Esta película ya existe en la base de datos.';*/
 } else {
-	$_SESSION['titulo'] = $_POST['titulo'];
-	$_SESSION['genero'] = $_POST['genero'];
-	$_SESSION['anyo'] = $_POST['anyo'];
-	$_SESSION['protagonista'] = $_POST['protagonista'];
-	$_SESSION['director'] = $_POST['director'];
-	header('Location: procesar.php');
+	echo $_POST['protagonista'];
+	$bd_protagonista = buscar_persona($_POST['protagonista']);
+	if (!$bd_protagonista) {
+		$mi_protagonista = new Persona($_POST['protagonista'], true, false);
+		var_dump($mi_protagonista);
+
+		insertar_persona($mi_protagonista);
+
+		$bd_protagonista = buscar_persona($_POST['protagonista']);
+	} elseif ($bd_protagonista['actor'] === 0) {
+		hacer_actor($bd_protagonista['id']);
+	}
+
+
+	$bd_director = buscar_persona($_POST['director']);
+	if (!$bd_director) {
+		$mi_director = new Persona($_POST['director'], false, true);
+
+		insertar_persona($mi_director);
+		
+		$bd_director = buscar_persona($_POST['director']);
+	} elseif ($bd_director['director'] === 0) {
+		hacer_director($bd_director['id']);
+	}
+
+	$mi_peli = new Pelicula($_POST['titulo'], $_POST['genero'], $_POST['anyo'], $bd_protagonista['id'], $bd_director['id']);
+	echo $mi_peli->titulo;
+
+	insertar_pelicula($mi_peli);
 }
 
 echo '<p><a href="index.php">Volver atrás</a></p>';
@@ -69,7 +95,6 @@ function formulario() {
 				</tr>
 			</table>
 		</form>';
-	cargar_generos();
 }
 
 function cargar_generos() {
@@ -82,13 +107,52 @@ function cargar_generos() {
 	return $result;
 }
 
-function insertar() {
+function insertar_pelicula($pelicula) {
 	global $conn;
 
-	$insert = "INSERT INTO libros (titulo, autor)
-				VALUES ('" . $_POST['titulo'] . "','" . $_POST['autor'] . "')";
+	$insert = "INSERT INTO peliculas (titulo, genero, anyo, protagonista, director)
+				VALUES ('" . $pelicula->titulo . "','"
+						. $pelicula->genero . "','"
+						. $pelicula->anyo . "','"
+						. $pelicula->protagonista . "','"
+						. $pelicula->director . "')";
 	return ($conn->query($insert));
 }
+
+function insertar_persona($persona) {
+	global $conn;
+
+	$insert = "INSERT INTO personas (nombre, esActor, esDirector)
+				VALUES ('" . $persona->nombre . "','"
+						. $persona->esActor . "','"
+						. $persona->esDirector . "')";
+	return ($conn->query($insert));
+}
+
+function buscar_pelicula($titulo) {
+	global $conn;
+
+	$select = "SELECT * FROM peliculas
+				WHERE titulo = '" . $titulo . "'";
+	$result = $conn->query($select);
+	$fila = $result->fetch_assoc();
+	var_dump($result);
+	var_dump($fila);
+	return ($fila);
+}
+
+function buscar_persona($nombre) {
+	global $conn;
+
+	$select = "SELECT * FROM personas
+				WHERE nombre = '" . $nombre . "'";
+	$result = $conn->query($select);
+	$fila = $result->fetch_assoc();
+	var_dump($result);
+	var_dump($fila);
+	return ($fila);
+}
+
 ?>
 </hody>
 </html>
