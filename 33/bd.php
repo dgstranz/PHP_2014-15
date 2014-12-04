@@ -13,7 +13,10 @@ $peliculas = "CREATE TABLE IF NOT EXISTS peliculas (
 	anyo int(4) NOT NULL,
 	protagonista int(11) NOT NULL,
 	director int(11) NOT NULL,
-	PRIMARY KEY (id)
+	PRIMARY KEY (id),
+	FOREIGN KEY (genero) REFERENCES generos(id),
+	FOREIGN KEY (protagonista) REFERENCES personas(id),
+	FOREIGN KEY (director) REFERENCES personas(id)
 ) ENGINE = MyISAM";
 
 $generos = "CREATE TABLE IF NOT EXISTS generos (
@@ -34,7 +37,7 @@ $conn->query($db_create) or die('Error al crear la base de datos: ' . $conn->err
 
 $conn->select_db('peliculaBD') or die('No se pudo establecer una conexión a la base de datos: ' . mysqli_connect_error());
 
-$conn->query($peliculas) or die ('Error al crear la tabla: ' . $conn->error);
 $conn->query($generos) or die ('Error al crear la tabla: ' . $conn->error);
 $conn->query($personas) or die ('Error al crear la tabla: ' . $conn->error);
+$conn->query($peliculas) or die ('Error al crear la tabla: ' . $conn->error);
 ?>

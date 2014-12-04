@@ -6,21 +6,46 @@
 <?php
 session_start();
 require_once('bd.php');
-
-var_dump($_POST);
+require_once('clases.php');
+require_once('funciones_bd.php');
 
 if (!isset($_POST['titulo']) || !isset($_POST['genero']) || !isset($_POST['anyo']) || !isset($_POST['protagonista']) || !isset($_POST['director'])) {
 	formulario();
 } elseif (empty($_POST['titulo']) || empty($_POST['genero']) || empty($_POST['anyo']) || empty($_POST['protagonista']) || empty($_POST['director'])) {
 	echo '<b>Error</b>: Los campos no pueden estar vacíos.';
 	formulario();
+} elseif (buscar_pelicula($_POST['titulo'])) {
+	echo '<b>Error</b>: Esta película ya existe en la base de datos.';
 } else {
-	$_SESSION['titulo'] = $_POST['titulo'];
-	$_SESSION['genero'] = $_POST['genero'];
-	$_SESSION['anyo'] = $_POST['anyo'];
-	$_SESSION['protagonista'] = $_POST['protagonista'];
-	$_SESSION['director'] = $_POST['director'];
-	header('Location: procesar.php');
+	echo $_POST['protagonista'];
+	$bd_protagonista = buscar_persona($_POST['protagonista']);
+	if (!$bd_protagonista) {
+		$mi_protagonista = new Persona($_POST['protagonista'], true, false);
+		var_dump($mi_protagonista);
+
+		insertar_persona($mi_protagonista);
+
+		$bd_protagonista = buscar_persona($_POST['protagonista']);
+	} elseif ($bd_protagonista['esActor'] == 0) {
+		modificar_profesion($bd_protagonista['id'], 'esActor', true);
+	}
+
+
+	$bd_director = buscar_persona($_POST['director']);
+	if (!$bd_director) {
+		$mi_director = new Persona($_POST['director'], false, true);
+
+		insertar_persona($mi_director);
+		
+		$bd_director = buscar_persona($_POST['director']);
+	} elseif ($bd_director['esDirector'] == 0) {
+		modificar_profesion($bd_director['id'], 'esDirector', true);
+	}
+
+	$mi_peli = new Pelicula($_POST['titulo'], $_POST['genero'], $_POST['anyo'], $bd_protagonista['id'], $bd_director['id']);
+	echo $mi_peli->titulo;
+
+	insertar_pelicula($mi_peli);
 }
 
 echo '<p><a href="index.php">Volver atrás</a></p>';
@@ -40,7 +65,7 @@ function formulario() {
 					<td>
 						<select name="genero">
 							<option value="">Elige un género</option>
-							<option value="">······················</option>';
+							<option value="">----------------------</option>';
 
 	while ($row = $generos->fetch_row()) {
 		echo '<option value="' . $row[0] . '"' . (isset($_POST['genero']) && (strval($_POST['genero']) == strval($row[0])) ? ' selected' : '') . '>' . ucfirst(utf8_encode($row[1])) . '</option>';
@@ -69,26 +94,7 @@ function formulario() {
 				</tr>
 			</table>
 		</form>';
-	cargar_generos();
-}
-
-function cargar_generos() {
-	global $conn;
-
-	$search = "SELECT id, genero FROM generos
-		ORDER BY genero";
-	$result = $conn->query($search);
-
-	return $result;
-}
-
-function insertar() {
-	global $conn;
-
-	$insert = "INSERT INTO libros (titulo, autor)
-				VALUES ('" . $_POST['titulo'] . "','" . $_POST['autor'] . "')";
-	return ($conn->query($insert));
 }
 ?>
-</hody>
+</body>
 </html>
