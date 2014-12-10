@@ -12,6 +12,16 @@ function buscar_pelicula($titulo) {
 	return $fila;
 }
 
+function cargar_peliculas() {
+	global $conn;
+
+	$select = "SELECT id, titulo, genero, anyo, protagonista, director FROM peliculas
+		ORDER BY titulo";
+	$result = $conn->query($select);
+
+	return $result;
+}
+
 function insertar_pelicula($pelicula) {
 	global $conn;
 
@@ -40,9 +50,9 @@ function buscar_genero($genero) {
 function cargar_generos() {
 	global $conn;
 
-	$search = "SELECT id, genero FROM generos
+	$select = "SELECT id, genero FROM generos
 		ORDER BY genero";
-	$result = $conn->query($search);
+	$result = $conn->query($select);
 
 	return $result;
 }
@@ -65,6 +75,28 @@ function buscar_persona($nombre) {
 	$result = $conn->query($select);
 	$fila = $result->fetch_assoc();
 	return $fila;
+}
+
+function cargar_actores() {
+	global $conn;
+
+	$select = "SELECT id, nombre FROM personas
+		WHERE esActor = true
+		ORDER BY nombre";
+	$result = $conn->query($select);
+
+	return $result;
+}
+
+function cargar_directores() {
+	global $conn;
+
+	$select = "SELECT id, nombre FROM personas
+		WHERE esDirector = true
+		ORDER BY nombre";
+	$result = $conn->query($select);
+
+	return $result;
 }
 
 function insertar_persona($persona) {

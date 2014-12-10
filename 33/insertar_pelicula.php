@@ -68,7 +68,7 @@ function formulario() {
 							<option value="">----------------------</option>';
 
 	while ($row = $generos->fetch_row()) {
-		echo '<option value="' . $row[0] . '"' . (isset($_POST['genero']) && (strval($_POST['genero']) == strval($row[0])) ? ' selected' : '') . '>' . ucfirst(utf8_encode($row[1])) . '</option>';
+		echo '<option value="' . $row[0] . '"' . (isset($_POST['genero']) && (strval($_POST['genero']) == strval($row[0])) ? ' selected' : '') . '>' . ucfirst($row[1]) . '</option>';
 	}
 
 	echo '				</select>
