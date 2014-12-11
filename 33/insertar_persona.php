@@ -21,7 +21,6 @@ if (!isset($_POST['nombre'])) {
 	echo '<b>Error</b>: Este actor o director ya existe en la base de datos.';
 } else {
 	$mi_persona = new Persona($_POST['nombre'], isset($_POST['esActor']), isset($_POST['esDirector']));
-	echo $mi_persona->nombre;
 
 	insertar_persona($mi_persona);
 }

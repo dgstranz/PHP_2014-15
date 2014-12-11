@@ -17,11 +17,9 @@ if (!isset($_POST['titulo']) || !isset($_POST['genero']) || !isset($_POST['anyo'
 } elseif (buscar_pelicula($_POST['titulo'])) {
 	echo '<b>Error</b>: Esta película ya existe en la base de datos.';
 } else {
-	echo $_POST['protagonista'];
 	$bd_protagonista = buscar_persona($_POST['protagonista']);
 	if (!$bd_protagonista) {
 		$mi_protagonista = new Persona($_POST['protagonista'], true, false);
-		var_dump($mi_protagonista);
 
 		insertar_persona($mi_protagonista);
 
@@ -43,7 +41,6 @@ if (!isset($_POST['titulo']) || !isset($_POST['genero']) || !isset($_POST['anyo'
 	}
 
 	$mi_peli = new Pelicula($_POST['titulo'], $_POST['genero'], $_POST['anyo'], $bd_protagonista['id'], $bd_director['id']);
-	echo $mi_peli->titulo;
 
 	insertar_pelicula($mi_peli);
 }

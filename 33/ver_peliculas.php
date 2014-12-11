@@ -13,11 +13,11 @@ tabla();
 echo '<p><a href="index.php">Volver atrás</a></p>';
 
 function tabla() {
-	$generos = cargar_peliculas();
+	$peliculas = cargar_peliculas();
 
 	echo '<h1>Lista de películas</h1>';
 	echo '<ul>';
-	while ($row = $generos->fetch_row()) {
+	while ($row = $peliculas->fetch_row()) {
 		echo '<li>' . $row[1] . ' (' . $row[3] . ')</li>';
 	}
 	echo '</ul>';
