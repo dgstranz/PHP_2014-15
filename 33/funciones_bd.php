@@ -15,8 +15,14 @@ function buscar_pelicula($titulo) {
 function cargar_peliculas() {
 	global $conn;
 
-	$select = "SELECT id, titulo, genero, anyo, protagonista, director FROM peliculas
-		ORDER BY titulo";
+	$select = "SELECT id, titulo, genero, anyo, protagonista, director FROM peliculas";
+
+	if (func_num_args()) {
+		$select .= ' ' . func_get_arg(0);
+	}
+
+	echo $select;
+
 	$result = $conn->query($select);
 
 	return $result;
