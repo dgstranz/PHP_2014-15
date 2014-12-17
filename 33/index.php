@@ -1,12 +1,14 @@
 <html>
 <head>
 	<meta http-equiv='Content-type' content='text/html; charset=utf-8'/>
+	<link rel='stylesheet' type='text/css' href='estilo.css'>
 </head>
 <body>
 
-<h1>Libros</h1>
+<h1>Películas</h1>
 
 <ul>
+	<li><a href="preferencias.php">Editar preferencias</a></li>
 	<li><a href="insertar_pelicula.php">Introducir nueva película</a></li>
 	<li><a href="insertar_genero.php">Introducir nuevo género cinematográfico</a></li>
 	<li><a href="insertar_persona.php">Introducir nuevo actor o director</a></li>
