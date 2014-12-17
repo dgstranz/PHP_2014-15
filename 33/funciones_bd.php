@@ -21,10 +21,7 @@ function cargar_peliculas() {
 		$select .= ' ' . func_get_arg(0);
 	}
 
-	echo $select;
-
 	$result = $conn->query($select);
-
 	return $result;
 }
 

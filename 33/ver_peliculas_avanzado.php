@@ -98,14 +98,10 @@ function formulario() {
 function sacar_consulta() {
 	$select = '';
 
-	$generos = cargar_generos();
-
 	if (isset($_POST['vars']['genero']) && isset($_POST['genero'])) {
 		$select .= 'WHERE genero IN (';
-		while ($row = $generos->fetch_row()) {
-			if (isset($_POST['genero'][$row[0]])) {
-				$select .= '\'' . $row[1] . '\', ';
-			}
+		foreach ($_POST['genero'] as $key => $value) {
+			$select .= $key . ', ';
 		}
 		$select = rtrim($select, ', ') . ')';
 	}
