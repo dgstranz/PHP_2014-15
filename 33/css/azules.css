@@ -1,0 +1,32 @@
+body {
+	font-family: Verdana;
+	background: rgb(240, 248, 255);
+}
+
+h1, li {
+	color: rgb(0, 0, 64);
+}
+
+a {
+	color: rgb(32, 64, 96);
+	background-color: rgb(224, 255, 240);
+	padding: 0px;
+}
+
+a:hover {
+	background-color: rgb(255, 255, 224);
+}
+
+form {
+	background-color: rgb(192, 224, 255);
+	border-radius: 10px;
+	padding: 5px;
+}
+
+input:focus, select:focus {
+	background-color: rgb(255, 255, 225);
+}
+
+input[type="submit"], input[type="reset"] {
+	background-color: rgb(160, 208, 255);
+}

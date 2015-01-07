@@ -1,7 +1,6 @@
 <html>
 <head>
 	<meta http-equiv='Content-type' content='text/html; charset=utf-8'/>
-	<link rel='stylesheet' type='text/css' href='estilo.css'>
 </head>
 <body>
 <?php
@@ -35,7 +34,7 @@ if (!isset($_POST['titulo']) || !isset($_POST['genero']) || !isset($_POST['anyo'
 		$mi_director = new Persona($_POST['director'], false, true);
 
 		insertar_persona($mi_director);
-		
+
 		$bd_director = buscar_persona($_POST['director']);
 	} elseif ($bd_director['esDirector'] == 0) {
 		modificar_profesion($bd_director['id'], 'esDirector', true);
@@ -74,7 +73,7 @@ function formulario() {
 				</tr>
 				<tr>
 					<td>Año:</td>
-					<td><input type="number" min="1890" max="' . $anyo_actual . '" name="anyo" value="' . (isset($_POST['anyo']) ? $_POST['anyo'] : 2014) . '" /></td>
+					<td><input type="number" min="1890" max="' . $anyo_actual . '" name="anyo" value="' . (isset($_POST['anyo']) ? $_POST['anyo'] : $anyo_actual) . '" /></td>
 				</tr>
 				<tr>
 					<td>Actor principal:</td>
