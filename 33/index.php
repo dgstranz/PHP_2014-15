@@ -8,17 +8,18 @@
 require_once('config.php');
 ?>
 
-<h1>Películas</h1>
+<h1><?php echo $mensajes['index']['Películas'] ?></h1>
 
 <ul>
-	<li><a href="preferencias.php">Editar preferencias</a></li>
-	<li><a href="insertar_pelicula.php">Introducir nueva película</a></li>
-	<li><a href="insertar_genero.php">Introducir nuevo género cinematográfico</a></li>
-	<li><a href="insertar_persona.php">Introducir nuevo actor o director</a></li>
-	<li><a href="ver_peliculas.php">Ver todas las películas</a></li>
-	<li><a href="ver_peliculas_avanzado.php">Búsqueda avanzada de películas</a></li>
-	<li><a href="ver_actores.php">Ver todos los actores</a></li>
-	<li><a href="ver_directores.php">Ver todos los directores</a></li>
+	<li><a href="preferencias.php"><?php echo $mensajes['index']['Editar preferencias'] ?></a></li>
+	<li><a href="insertar_pelicula.php"><?php echo $mensajes['index']['Nueva película'] ?></a></li>
+	<li><a href="insertar_genero.php"><?php echo $mensajes['index']['Nuevo género'] ?></a></li>
+	<li><a href="insertar_persona.php"><?php echo $mensajes['index']['Nuevo actor o director'] ?></a></li>
+	<li><a href="ver_peliculas.php"><?php echo $mensajes['index']['Ver películas'] ?></a></li>
+	<li><a href="ver_peliculas_avanzado.php"><?php echo $mensajes['index']['Búsqueda avanzada de películas'] ?></a></li>
+	<li><a href="ver_actores.php"><?php echo $mensajes['index']['Ver actores'] ?></a></li>
+	<li><a href="ver_directores.php"><?php echo $mensajes['index']['Ver directores'] ?></a></li>
 </ul>
+
 </hody>
 </html>

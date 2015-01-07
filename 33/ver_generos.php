@@ -11,12 +11,14 @@ require_once('funciones_bd.php');
 
 tabla();
 
-echo '<p><a href="index.php">Volver atrás</a></p>';
+echo '<p><a href="index.php">' . $mensajes['form']['Volver atrás'] . '</a></p>';
 
 function tabla() {
+	global $mensajes;
+	
 	$generos = cargar_generos();
 
-	echo '<h1>Lista de géneros</h1>';
+	echo '<h1>' . $mensajes['ver_generos']['Lista de géneros'] . '</h1>';
 	echo '<ul>';
 	while ($row = $generos->fetch_row()) {
 		echo '<li>' . $row[1] . '</li>';

@@ -11,12 +11,14 @@ require_once('funciones_bd.php');
 
 tabla();
 
-echo '<p><a href="index.php">Volver atrás</a></p>';
+echo '<p><a href="index.php">' . $mensajes['form']['Volver atrás'] . '</a></p>';
 
 function tabla() {
+	global $mensajes;
+	
 	$directores = cargar_directores();
 
-	echo '<h1>Lista de directores</h1>';
+	echo '<h1>' . $mensajes['ver_directores']['Lista de directores'] . '</h1>';
 	echo '<ul>';
 	while ($row = $directores->fetch_row()) {
 		echo '<li>' . $row[1] . '</li>';

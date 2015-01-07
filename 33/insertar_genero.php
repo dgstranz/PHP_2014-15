@@ -12,27 +12,29 @@ require_once('funciones_bd.php');
 if (!isset($_POST['genero'])) {
 	formulario();
 } elseif (empty($_POST['genero'])) {
-	echo '<b>Error</b>: El campo no puede estar vacío.';
+	echo $mensajes['form']['Error'] . 'El campo no puede estar vacío.';
 	formulario();
 } elseif (buscar_genero($_POST['genero'])) {
-	echo '<b>Error</b>: Este género ya existe en la base de datos.';
+	echo $mensajes['form']['Error'] . 'Este género ya existe en la base de datos.';
 } else {
 	insertar_genero($_POST['genero']);
 }
 
-echo '<p><a href="index.php">Volver atrás</a></p>';
+echo '<p><a href="index.php">' . $mensajes['form']['Volver atrás'] . '</a></p>';
 
 function formulario() {
+	global $mensajes;
+
 	echo '<form action="' . $_SERVER['PHP_SELF'] . '" method="post">
 			<table>
 				<tr>
-					<td>Nombre:</td>
+					<td>' . $mensajes['insertar_genero']['Nombre:'] . '</td>
 					<td><input type="text" name="genero" value="' . (isset($_POST['genero']) ? $_POST['genero'] : '') . '" /></td>
 				</tr>
 				<tr>
 					<td colspan="2">
-						<input type="submit" value="Enviar" />
-						<input type="reset" value="Borrar" />
+						<input type="submit" value="' . $mensajes['form']['Enviar'] . '" />
+						<input type="reset" value="' . $mensajes['form']['Borrar'] . '" />
 					</td>
 				</tr>
 			</table>

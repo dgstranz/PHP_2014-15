@@ -9,9 +9,6 @@ require_once('bd.php');
 require_once('clases.php');
 require_once('funciones_bd.php');
 
-var_dump($_POST);
-var_dump($_COOKIE);
-
 if (!isset($_POST['tema']) || !isset($_POST['idioma'])) {
 	formulario();
 } else {
@@ -31,43 +28,45 @@ if (!isset($_POST['tema']) || !isset($_POST['idioma'])) {
 	header('Location: ' .  $_SERVER['PHP_SELF']);
 }
 
-echo '<p><a href="index.php">Volver atrás</a></p>';
+echo '<p><a href="index.php">' . $mensajes['form']['Volver atrás'] . '</a></p>';
 
 function formulario() {
+	global $mensajes;
+
 	echo '<form action="' . $_SERVER['PHP_SELF'] . '" method="post">
 			<table>
 				<tr>
-					<td>Tema:</td>
+					<td>' . $mensajes['preferencias']['Tema'] . '</td>
 					<td>
 						<select name="tema">
-							<option value="">Elige un tema</option>
+							<option value="">' . $mensajes['preferencias']['Elige un tema'] . '</option>
 							<option value="">----------------------</option>
-							<option value="ninguno">Estilo por defecto</option>
-							<option value="azules.css">Azul</option>
-							<option value="rojos.css">Rojo</option>
-							<option value="monocromo_oscuro.css">Monocromo con fondo oscuro</option>
+							<option value="ninguno">' . $mensajes['preferencias']['Estilo por defecto'] . '</option>
+							<option value="azules.css">' . $mensajes['preferencias']['Azul'] . '</option>
+							<option value="rojos.css">' . $mensajes['preferencias']['Rojo'] . '</option>
+							<option value="monocromo_oscuro.css">' . $mensajes['preferencias']['Monocromo con fondo oscuro'] . '</option>
 						</select>
 					</td>
 				</tr>
 				<tr>
-					<td>Idioma:</td>
+					<td>' . $mensajes['preferencias']['Idioma'] . '</td>
 					<td>
 						<select name="idioma">
-							<option value="">Elige un idioma</option>
+							<option value="">' . $mensajes['preferencias']['Elige un idioma'] . '</option>
 							<option value="">----------------------</option>
 							<option value="en">English</option>
-							<option value="es">Español</option>
-							<option value="fr">Français</option>
-							<option value="de">Deutsch</option>
-							<option value="pl">Polski</option>
-							<option value="fi">Suomi</option>
-						</select>
+							<option value="es">Español</option>';
+//							<option value="fr">Français</option>
+//							<option value="de">Deutsch</option>
+//							<option value="pl">Polski</option>
+//							<option value="fi">Suomi</option>
+echo '						</select>
 					</td>
 				</tr>
 				<tr>
 					<td colspan="2">
-						<input type="submit" value="Enviar" />
-						<input type="reset" value="Borrar" />
+						<input type="submit" value="' . $mensajes['form']['Enviar'] . '" />
+						<input type="reset" value="' . $mensajes['form']['Borrar'] . '" />
 					</td>
 				</tr>
 			</table>

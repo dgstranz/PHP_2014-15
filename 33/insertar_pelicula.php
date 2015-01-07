@@ -12,10 +12,10 @@ require_once('funciones_bd.php');
 if (!isset($_POST['titulo']) || !isset($_POST['genero']) || !isset($_POST['anyo']) || !isset($_POST['protagonista']) || !isset($_POST['director'])) {
 	formulario();
 } elseif (empty($_POST['titulo']) || empty($_POST['genero']) || empty($_POST['anyo']) || empty($_POST['protagonista']) || empty($_POST['director'])) {
-	echo '<b>Error</b>: Los campos no pueden estar vacíos.';
+	echo $mensajes['form']['Error'] . $mensajes['insertar_pelicula']['Error campos vacíos'];
 	formulario();
 } elseif (buscar_pelicula($_POST['titulo'])) {
-	echo '<b>Error</b>: Esta película ya existe en la base de datos.';
+	echo $mensajes['form']['Error'] . $mensajes['insertar_pelicula']['Error película ya existe'];
 } else {
 	$bd_protagonista = buscar_persona($_POST['protagonista']);
 	if (!$bd_protagonista) {
@@ -45,23 +45,24 @@ if (!isset($_POST['titulo']) || !isset($_POST['genero']) || !isset($_POST['anyo'
 	insertar_pelicula($mi_peli);
 }
 
-echo '<p><a href="index.php">Volver atrás</a></p>';
+echo '<p><a href="index.php">' . $mensajes['form']['Volver atrás'] . '</a></p>';
 
 function formulario() {
+	global $mensajes;
 	$anyo_actual = date('Y');
 	$generos = cargar_generos();
 
 	echo '<form action="' . $_SERVER['PHP_SELF'] . '" method="post">
 			<table>
 				<tr>
-					<td>Título:</td>
+					<td>' . $mensajes['insertar_pelicula']['Título'] . '</td>
 					<td><input type="text" name="titulo" value="' . (isset($_POST['titulo']) ? $_POST['titulo'] : '') . '" /></td>
 				</tr>
 				<tr>
-					<td>Género:</td>
+					<td>' . $mensajes['insertar_pelicula']['Género'] . '</td>
 					<td>
 						<select name="genero">
-							<option value="">Elige un género</option>
+							<option value="">' . $mensajes['insertar_pelicula']['Elige género'] . '</option>
 							<option value="">----------------------</option>';
 
 	while ($row = $generos->fetch_row()) {
@@ -72,21 +73,21 @@ function formulario() {
 				</td>
 				</tr>
 				<tr>
-					<td>Año:</td>
+					<td>' . $mensajes['insertar_pelicula']['Año'] . '</td>
 					<td><input type="number" min="1890" max="' . $anyo_actual . '" name="anyo" value="' . (isset($_POST['anyo']) ? $_POST['anyo'] : $anyo_actual) . '" /></td>
 				</tr>
 				<tr>
-					<td>Actor principal:</td>
+					<td>' . $mensajes['insertar_pelicula']['Protagonista'] . '</td>
 					<td><input type="text" name="protagonista" value="' . (isset($_POST['protagonista']) ? $_POST['protagonista'] : '') . '" /></td>
 				</tr>
 				<tr>
-					<td>Director</td>
+					<td>' . $mensajes['insertar_pelicula']['Director'] . '</td>
 					<td><input type="text" name="director" value="' . (isset($_POST['director']) ? $_POST['director'] : '') . '" /></td>
 				</tr>
 				<tr>
 					<td colspan="2">
-						<input type="submit" value="Enviar" />
-						<input type="reset" value="Borrar" />
+						<input type="submit" value="' . $mensajes['form']['Enviar'] . '" />
+						<input type="reset" value="' . $mensajes['form']['Borrar'] . '" />
 					</td>
 				</tr>
 			</table>
