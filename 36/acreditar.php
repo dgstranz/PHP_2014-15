@@ -14,9 +14,8 @@ if (!isset($_SESSION['identificativo'])) {
 		echo '<b>Error</b>: Nombre de usuario o contraseña no válido.';
 		formulario();
 	} else {
-		$_SESSION['identificativo'] = true;
-		echo 'Usuario identificado correctamente.<br>';
-		echo '<a href="index.php">Volver al índice</a>';
+		$_SESSION['identificativo'] = $_POST['username'];
+		header('Location: index.php?' . SID);
 	}
 } else {
 	echo 'Usuario ya identificado.<br>';

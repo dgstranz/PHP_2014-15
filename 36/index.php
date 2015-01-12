@@ -14,12 +14,15 @@ if(!isset($_SESSION['identificativo'])) {
 	setcookie('PHPSESSID', '', time() - 3600);
 	session_destroy();
 	header('Location: acreditar.php');
+} else {
+	echo 'Bienvenido, ' . $_SESSION['identificativo'] . '.';
 }
 ?>
 
 <ul>
 	<li><a href="http://www.google.com">Ver información</a></li>
-	<li><a href="<?php echo $_SERVER['PHP_SELF'] ?>?fin=1">Terminar sesión</li>
+	<li><a href="acreditar.php">Acreditar</a></li>
+	<li><a href="<?php echo $_SERVER['PHP_SELF'] ?>?fin=1">Terminar sesión</a></li>
 </ul>
 
 </hody>
