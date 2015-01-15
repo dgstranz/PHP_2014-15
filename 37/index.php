@@ -33,7 +33,7 @@ function formulario() {
 						</td>
 					</tr>
 					<tr>
-						<td colspan="2">
+						<td class="buttons" colspan="2">
 							<input type="submit" value="Siguiente >" />
 						</td>
 					</tr>

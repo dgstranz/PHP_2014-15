@@ -10,27 +10,37 @@ session_start();
 include 'cabecera.php';
 include 'opciones.php';
 
-if (isset($_POST['zona'])) {
-	$_SESSION['zona'] = $_POST['zona'];
-} elseif (!isset($_SESSION['zona'])) {
-	header('Location: index.php');
+if (isset($_POST['back'])) {
+	header('Location: index2.php');
+} elseif (isset($_POST['dormitorios']) && isset($_POST['precio'])) {
+	$_SESSION['dormitorios'] = $_POST['dormitorios'];
+	$_SESSION['precio'] = $_POST['precio'];
+} elseif (!isset($_SESSION['dormitorios']) || !isset($_SESSION['precio'])) {
+	header('Location: index3.php');
 }
 
 cabecera(4);
 formulario();
 busqueda();
+var_dump($_SESSION);
 
 function formulario() {
-	echo '<form action="buscar.php" method="post">
+	echo '<form action="index5.php" method="post">
 			<p><span class="paso">Paso 4: Elija las características extra de la vivienda.</span></p>
 			<fieldset>
 				<table>
 					<tr>
 						<td>Extras:</td>
 						<td>
-							<input type="checkbox" name="piscina">Piscina<br>
-							<input type="checkbox" name="jardin">Jardín<br>
-							<input type="checkbox" name="piscina">Garaje
+							<input type="checkbox" name="piscina">Piscina' . "\t" . '
+							<input type="checkbox" name="jardin">Jardín' . "\t" . '
+							<input type="checkbox" name="garaje">Garaje
+						</td>
+					</tr>
+					<tr>
+						<td class="buttons" colspan="2">
+							<input type="submit" name="back" value="&lt; Atrás" />
+							<input type="submit" name="submit" value="Siguiente >" />
 						</td>
 					</tr>
 				</table>

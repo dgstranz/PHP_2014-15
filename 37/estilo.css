@@ -33,3 +33,7 @@ fieldset {
 table {
 	width: 100%;
 }
+
+table .buttons {
+	padding-top: 20px;
+}

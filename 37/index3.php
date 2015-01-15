@@ -10,15 +10,18 @@ session_start();
 include 'cabecera.php';
 include 'opciones.php';
 
-if (isset($_POST['zona'])) {
+if (isset($_POST['back'])) {
+	header('Location: index.php');
+} elseif (isset($_POST['zona'])) {
 	$_SESSION['zona'] = $_POST['zona'];
 } elseif (!isset($_SESSION['zona'])) {
-	header('Location: index.php');
+	header('Location: index2.php');
 }
 
 cabecera(3);
 formulario();
 busqueda();
+var_dump($_SESSION);
 
 function formulario() {
 	global $dormitorios;
@@ -49,8 +52,9 @@ function formulario() {
 		echo '			</td>
 					</tr>
 					<tr>
-						<td colspan="2">
-							<input type="submit" value="Siguiente >" />
+						<td class="buttons" colspan="2">
+							<input type="submit" name="back" value="&lt; Atrás" />
+							<input type="submit" name="submit" value="Siguiente >" />
 						</td>
 					</tr>
 				</table>

@@ -40,8 +40,9 @@ function formulario() {
 						</td>
 					</tr>
 					<tr>
-						<td colspan="2">
-							<input type="submit" value="Siguiente >" />
+						<td class="buttons" colspan="2">
+							<input type="submit" name="back" value="&lt; Atrás" />
+							<input type="submit" name="submit" value="Siguiente >" />
 						</td>
 					</tr>
 				</table>
