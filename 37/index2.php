@@ -28,7 +28,7 @@ function formulario() {
 			<fieldset>
 				<table>
 					<tr>
-						<td>Zona:</td>
+						<th>Zona:</th>
 						<td>
 							<select name="zona">';
 

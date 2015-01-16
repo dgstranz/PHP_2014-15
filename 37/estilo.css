@@ -24,14 +24,14 @@ h1 {
 }
 
 fieldset {
-	width: 60%;
-	min-width: 300px;
-	max-width: 800px;
+	max-width: 900px;
 	border-color: rgb(128, 192, 255);
 }
 
-table {
-	width: 100%;
+th {
+	padding-right: 20px;
+	text-align: right;
+	vertical-align: top;
 }
 
 table .buttons {

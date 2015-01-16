@@ -21,7 +21,7 @@ function formulario() {
 			<fieldset>
 				<table>
 					<tr>
-						<td>Tipo:</td>
+						<th>Tipo:</th>
 						<td>
 							<select name="tipo">';
 

@@ -21,7 +21,6 @@ if (isset($_POST['back'])) {
 cabecera(3);
 formulario();
 busqueda();
-var_dump($_SESSION);
 
 function formulario() {
 	global $dormitorios;
@@ -32,17 +31,17 @@ function formulario() {
 			<fieldset>
 				<table>
 					<tr>
-						<td>Número de dormitorios:</td>
+						<th>Número de dormitorios:</th>
 						<td>';
 
 		foreach ($dormitorios as $key => $value) {
-			echo '<input type="radio" name="dormitorios" value="' . $key . '">' . $value . "\t";
+			echo '<input type="radio" name="dormitorios" value="' . $key . '">&#8239;' . $value . "\t";
 		}
 		
 		echo '			</td>
 					</tr>
 					<tr>
-						<td>Precio:</td>
+						<th>Precio:</th>
 						<td>';
 
 		foreach ($precios as $key => $value) {

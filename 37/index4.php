@@ -25,19 +25,26 @@ busqueda();
 var_dump($_SESSION);
 
 function formulario() {
+	global $extras;
+
 	echo '<form action="index5.php" method="post">
 			<p><span class="paso">Paso 4: Elija las características extra de la vivienda.</span></p>
 			<fieldset>
-				<table>
-					<tr>
-						<td>Extras:</td>
-						<td>
-							<input type="checkbox" name="piscina">Piscina' . "\t" . '
-							<input type="checkbox" name="jardin">Jardín' . "\t" . '
-							<input type="checkbox" name="garaje">Garaje
-						</td>
-					</tr>
-					<tr>
+				<table>';
+
+	foreach ($extras as $extra) {
+		echo '<tr>';
+		echo '<th>' . $extra . ':</th>';
+		echo '<td>
+				<input type="radio" name="' . $extra . '" value="1">Sí
+				<input type="radio" name="' . $extra . '" value="0">No
+				<input type="radio" name="' . $extra . '" value="2" checked>Indiferente
+			</td>';
+		echo '</tr>';
+	}
+
+
+	echo '			<tr>
 						<td class="buttons" colspan="2">
 							<input type="submit" name="back" value="&lt; Atrás" />
 							<input type="submit" name="submit" value="Siguiente >" />

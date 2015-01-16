@@ -13,12 +13,12 @@ include 'opciones.php';
 if (isset($_POST['back'])) {
 	header('Location: index3.php');
 } else {
-	$extras = array('piscina', 'jardin', 'garaje');
 	foreach ($extras as $extra) {
 		if (isset($_POST[$extra])) {
-			$_SESSION[$extra] = true;
+			$_SESSION['extras'][$extra] = $_POST[$extra];
 		} else {
-			$_SESSION[$extra] = false;
+			unset($_SESSION['extras']);
+			header('Location: index4.php');
 		}
 	}
 }
