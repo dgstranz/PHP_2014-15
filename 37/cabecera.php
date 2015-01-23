@@ -1,6 +1,6 @@
 <?php
 function cabecera($pagina) {
-	$paginas = array(1 => 'Tipo', 2 => 'Zona', 3 => 'Características', 4 => 'Extras', 5 => 'Enviar');
+	$paginas = array(1 => 'Tipo', 2 => 'Provincia', 3 => 'Características', 4 => 'Extras', 5 => 'Enviar');
 	echo '<h1>Búsqueda de vivienda</h1>';
 	$indice = array();
 	foreach ($paginas as $key => $value) {

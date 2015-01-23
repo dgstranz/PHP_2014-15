@@ -28,8 +28,8 @@ busqueda();
 var_dump($_SESSION);
 
 function busqueda() {
-	global $tipos, $zonas;
-	echo '<span class="busqueda">Buscando ' . $tipos[$_SESSION['tipo']] . ' en ' . $zonas[$_SESSION['zona']] . '</span>';
+	global $tipos, $provincias;
+	echo '<span class="busqueda">Buscando ' . $tipos[$_SESSION['tipo']] . ' en ' . $provincias[$_SESSION['provincia']] . '</span>';
 }
 ?>
 

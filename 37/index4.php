@@ -12,10 +12,11 @@ include 'opciones.php';
 
 if (isset($_POST['back'])) {
 	header('Location: index2.php');
-} elseif (isset($_POST['dormitorios']) && isset($_POST['precio'])) {
+} elseif (isset($_POST['dormitorios']) && isset($_POST['preciomin']) && isset($_POST['preciomax'])) {
 	$_SESSION['dormitorios'] = $_POST['dormitorios'];
-	$_SESSION['precio'] = $_POST['precio'];
-} elseif (!isset($_SESSION['dormitorios']) || !isset($_SESSION['precio'])) {
+	$_SESSION['preciomin'] = $_POST['preciomin'];
+	$_SESSION['preciomax'] = $_POST['preciomax'];
+} elseif (!isset($_SESSION['dormitorios']) || !isset($_SESSION['preciomin']) || !isset($_SESSION['preciomax'])) {
 	header('Location: index3.php');
 }
 
@@ -56,8 +57,8 @@ function formulario() {
 }
 
 function busqueda() {
-	global $tipos, $zonas;
-	echo '<span class="busqueda">Buscando ' . $tipos[$_SESSION['tipo']] . ' en ' . $zonas[$_SESSION['zona']] . '</span>';
+	global $tipos, $provincias;
+	echo '<span class="busqueda">Buscando ' . $tipos[$_SESSION['tipo']] . ' en ' . $provincias[$_SESSION['provincia']] . '</span>';
 }
 ?>
 

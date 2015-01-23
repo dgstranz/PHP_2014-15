@@ -21,18 +21,20 @@ formulario();
 busqueda();
 
 function formulario() {
-	global $zonas;
+	global $provincias;
+	$coll = new Collator('es_ES');
+	collator_asort($coll, $provincias);
 
 	echo '<form action="index3.php" method="post">
-			<p><span class="paso">Paso 2: Elija la zona de la vivienda.</span></p>
+			<p><span class="paso">Paso 2: Elija la provincia donde desea realizar la búsqueda.</span></p>
 			<fieldset>
 				<table>
 					<tr>
-						<th>Zona:</th>
+						<th>Provincia:</th>
 						<td>
-							<select name="zona">';
+							<select name="provincia">';
 
-		foreach ($zonas as $key => $value) {
+		foreach ($provincias as $key => $value) {
 			echo '<option value="' . $key . '">' . $value . '</option>';
 		}
 		
@@ -42,7 +44,7 @@ function formulario() {
 					<tr>
 						<td class="buttons" colspan="2">
 							<input type="submit" name="back" value="&lt; Atrás" />
-							<input type="submit" name="submit" value="Siguiente >" />
+							<input type="submit" name="submit" value="Siguiente &gt;" />
 						</td>
 					</tr>
 				</table>

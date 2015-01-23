@@ -7,17 +7,61 @@ $tipos = array(
 		'Dúplex'
 	);
 
-$zonas = array(
+$provincias = array(null,
+		'Álava / Araba',
+		'Albacete',
+		'Alicante / Alacant',
+		'Almería',
+		'Ávila',
+		'Badajoz',
+		'Baleares / Balears',
+		'Barcelona',
+		'Burgos',
+		'Cáceres',
+		'Cádiz',
+		'Castellón / Castelló',
+		'Ciudad Real',
+		'Córdoba',
+		'La Coruña / A Coruña',
+		'Cuenca',
+		'Gerona / Girona',
+		'Granada',
+		'Guadalajara',
+		'Guipúzcoa / Gipuzkoa',
+		'Huelva',
+		'Huesca',
+		'Jaén',
+		'León',
+		'Lérida / Lleida',
+		'La Rioja',
+		'Lugo',
 		'Madrid',
-		'Alcalá de Henares',
-		'Alcorcón',
-		'Ciempozuelos',
-		'Fuenlabrada',
-		'Getafe',
-		'Guadarrama',
-		'Majadahonda',
-		'Villaviciosa de Odón'
+		'Málaga',
+		'Murcia',
+		'Navarra',
+		'Orense / Ourense',
+		'Asturias',
+		'Palencia',
+		'Las Palmas',
+		'Pontevedra',
+		'Salamanca',
+		'Santa Cruz de Tenerife',
+		'Cantabria',
+		'Segovia',
+		'Sevilla',
+		'Soria',
+		'Tarragona',
+		'Teruel',
+		'Toledo',
+		'Valencia / València',
+		'Valladolid',
+		'Vizcaya / Bizkaia',
+		'Zamora',
+		'Zaragoza',
+		'Ceuta',
+		'Melilla'
 	);
+unset($provincias[0]);
 
 $dormitorios = array(
 		'1',
@@ -26,13 +70,6 @@ $dormitorios = array(
 		'4',
 		'5',
 		'Más de 5'
-	);
-
-$precios = array(
-		'Menos de 100 000 €',
-		'100 000 &ndash; 200 000 €',
-		'200 000 &ndash; 300 000 €',
-		'Más de 300 000 €'
 	);
 
 $extras = array(
