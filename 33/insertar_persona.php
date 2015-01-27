@@ -39,8 +39,8 @@ function formulario() {
 				<tr>
 					<td>' . $mensajes['insertar_persona']['Ocupaciones'] . '</td>
 					<td>
-						<input type="checkbox" name="esActor" value="true" ' . (isset($_POST['esActor']) ? 'checked ' : '') . '/>Actor<br>
-						<input type="checkbox" name="esDirector" value="true" ' . (isset($_POST['esDirector']) ? 'checked ' : '') . '/>Director<br>
+						<input type="checkbox" name="esActor" value="true" ' . (isset($_POST['esActor']) ? 'checked ' : '') . '/>' . $mensajes['insertar_persona']['Actor'] . '<br>
+						<input type="checkbox" name="esDirector" value="true" ' . (isset($_POST['esDirector']) ? 'checked ' : '') . '/>' . $mensajes['insertar_persona']['Director'] . '<br>
 					</td>
 				</tr>
 				<tr>

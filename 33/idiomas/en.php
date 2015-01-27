@@ -2,8 +2,6 @@
 $mensajes = array();
 
 // bd.php
-//$mensajes['bd'] = array();
-
 $mensajes['bd']['No conexión'] = 'Could not establish a connection: ';
 $mensajes['bd']['Error BD'] = 'Failed to create the database: ';
 $mensajes['bd']['No conexión BD'] = 'Could not establish a connection to the database: ';
@@ -44,10 +42,12 @@ $mensajes['insertar_pelicula']['Director'] = 'Director:';
 
 // insertar_persona.php
 $mensajes['insertar_persona']['Error falta nombre'] = 'The name should be submitted.';
-$mensajes['insertar_persona']['Error falta ocupación'] = 'Must have a profession.';
+$mensajes['insertar_persona']['Error falta ocupación'] = 'Must have a job.';
 $mensajes['insertar_persona']['Error persona ya existe'] = 'This actor or director already exists in the database.';
 $mensajes['insertar_persona']['Nombre'] = 'Name:';
-$mensajes['insertar_persona']['Ocupaciones'] = 'Professions:';
+$mensajes['insertar_persona']['Ocupaciones'] = 'Jobs:';
+$mensajes['insertar_persona']['Actor'] = 'Actor';
+$mensajes['insertar_persona']['Director'] = 'Director';
 
 // preferencias.php
 $mensajes['preferencias']['Tema'] = 'Theme:';
@@ -71,7 +71,7 @@ $mensajes['ver_generos']['Lista de géneros'] = 'List of genres';
 // ver_peliculas.php & ver_peliculas_avanzado.php
 $mensajes['ver_peliculas']['Lista de películas'] = 'List of movies';
 $mensajes['ver_peliculas']['Especificar géneros'] = 'Select genres:';
-$mensajes['ver_peliculas']['Especificar años'] = 'Select years:';
+$mensajes['ver_peliculas']['Especificar años'] = 'Select a range of years:';
 $mensajes['ver_peliculas']['desde'] = 'from';
 $mensajes['ver_peliculas']['hasta'] = 'to';
 $mensajes['ver_peliculas']['Especificar protagonista'] = 'Select leading actor:';

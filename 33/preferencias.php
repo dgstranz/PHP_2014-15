@@ -55,12 +55,10 @@ function formulario() {
 							<option value="">' . $mensajes['preferencias']['Elige un idioma'] . '</option>
 							<option value="">----------------------</option>
 							<option value="en">English</option>
-							<option value="es">Español</option>';
-//							<option value="fr">Français</option>
-//							<option value="de">Deutsch</option>
-//							<option value="pl">Polski</option>
-//							<option value="fi">Suomi</option>
-echo '						</select>
+							<option value="es">Español</option>
+							<option value="fr">Français</option>
+							<option value="ja">日本語</option>
+						</select>
 					</td>
 				</tr>
 				<tr>

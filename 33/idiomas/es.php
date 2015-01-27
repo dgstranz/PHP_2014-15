@@ -46,6 +46,8 @@ $mensajes['insertar_persona']['Error falta ocupación'] = 'Debe indicarse alguna
 $mensajes['insertar_persona']['Error persona ya existe'] = 'Este actor o director ya existe en la base de datos.';
 $mensajes['insertar_persona']['Nombre'] = 'Nombre:';
 $mensajes['insertar_persona']['Ocupaciones'] = 'Ocupaciones:';
+$mensajes['insertar_persona']['Actor'] = 'Actor';
+$mensajes['insertar_persona']['Director'] = 'Director';
 
 // preferencias.php
 $mensajes['preferencias']['Tema'] = 'Tema:';

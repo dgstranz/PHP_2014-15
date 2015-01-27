@@ -52,8 +52,8 @@ function formulario() {
 						<input onclick="toggle(\'sel_anyo\')" type="checkbox" name="vars[anyo]" value="true"' . (isset($_POST['vars']['anyo']) ? ' checked' : '') . '>' . $mensajes['ver_peliculas']['Especificar años'] . '
 					</td>
 					<td colspan="2" class="sel_anyo' . (isset($_POST['vars']['anyo']) ? '' : ' hidden') . '">
-						' . $mensajes['ver_peliculas']['desde'] . ' <input type="number" min="1890" max="' . $anyo_actual . '" name="anyo_min" value="' . (isset($_POST['anyo_min']) ? $_POST['anyo_min'] : 2014) . '" />
-						' . $mensajes['ver_peliculas']['hasta'] . ' <input type="number" min="1890" max="' . $anyo_actual . '" name="anyo_max" value="' . (isset($_POST['anyo_max']) ? $_POST['anyo_max'] : 2014) . '" />
+						' . $mensajes['ver_peliculas']['desde'] . ' <input type="number" min="1890" max="' . $anyo_actual . '" name="anyo_min" value="' . (isset($_POST['anyo_min']) ? $_POST['anyo_min'] : $anyo_actual) . '" />
+						' . $mensajes['ver_peliculas']['hasta'] . ' <input type="number" min="1890" max="' . $anyo_actual . '" name="anyo_max" value="' . (isset($_POST['anyo_max']) ? $_POST['anyo_max'] : $anyo_actual) . '" />
 					</td>
 				</tr>
 				<tr>
