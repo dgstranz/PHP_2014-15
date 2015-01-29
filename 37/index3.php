@@ -23,7 +23,7 @@ formulario();
 busqueda();
 
 function formulario() {
-	global $dormitorios;
+	global $max_dormitorios;
 	global $precios;
 
 	echo '<form action="index4.php" method="post">
@@ -34,9 +34,11 @@ function formulario() {
 						<th>Número de dormitorios:</th>
 						<td colspan="2">';
 
-		foreach ($dormitorios as $key => $value) {
-			echo '<input type="radio" name="dormitorios" value="' . $key . '">&#8239;' . $value . "\t";
+		for ($i=1; $i <= $max_dormitorios; $i++) { 
+			echo '<input type="radio" name="dormitorios" value="' . $i . '">&#8239;' . $i . "\t";
 		}
+
+		echo '<input type="radio" name="dormitorios" value="' . ($max_dormitorios + 1) . '">&#8239;Más de ' . $max_dormitorios . "\t";
 		
 		echo '			</td>
 					</tr>

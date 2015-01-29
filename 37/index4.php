@@ -10,8 +10,6 @@ session_start();
 include 'cabecera.php';
 include 'opciones.php';
 
-// Revisar el array de dormitorios
-
 if (isset($_POST['back'])) {
 	header('Location: index2.php');
 } elseif (isset($_POST['dormitorios']) && isset($_POST['preciomin']) && isset($_POST['preciomax'])) {

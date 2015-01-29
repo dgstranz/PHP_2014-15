@@ -35,7 +35,14 @@ function busqueda() {
 $select = "SELECT * FROM viviendas ";
 $select .= "WHERE tipo = " . $_SESSION['tipo'] . " ";
 $select .= "AND provincia = " . $_SESSION['provincia'] . " ";
-$select .= "AND dormitorios = " . $_SESSION['dormitorios'] . " ";
+
+// Aprovecho que en el formulario la opción "> ($max_dormitorios)" pasa el valor $max_dormitorios + 1
+$select .= "AND dormitorios ";
+if ($_SESSION['dormitorios'] > $max_dormitorios) {
+	$select .= ">= ";
+}
+$select .= $_SESSION['dormitorios'] . " ";
+
 $select .= "AND precio >= " . $_SESSION['preciomin'] . " ";
 $select .= "AND precio <= " . $_SESSION['preciomax'];
 

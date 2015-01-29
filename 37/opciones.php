@@ -63,14 +63,7 @@ $provincias = array(null,
 	);
 unset($provincias[0]);
 
-$dormitorios = array(
-		'1',
-		'2',
-		'3',
-		'4',
-		'5',
-		'Más de 5'
-	);
+$max_dormitorios = 5;
 
 $extras = array(
 		'Piscina',
