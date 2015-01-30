@@ -37,3 +37,13 @@ th {
 table .buttons {
 	padding-top: 20px;
 }
+
+#resultado {
+	border: 1px solid rgb(128, 128, 128);
+	-webkit-border-horizontal-spacing: 0px;
+	-webkit-border-vertical-spacing: 0px;
+}
+
+#resultado td {
+	padding: 3px 5px;
+}

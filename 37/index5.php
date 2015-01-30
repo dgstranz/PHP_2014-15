@@ -32,15 +32,13 @@ function busqueda() {
 	echo '<span class="busqueda">Buscando ' . $tipos[$_SESSION['tipo']] . ' en ' . $provincias[$_SESSION['provincia']] . '</span>';
 }
 
-$select = "SELECT * FROM viviendas ";
+$select = "SELECT tipo, provincia, dormitorios, precio, piscina, jardin, garaje FROM viviendas ";
 $select .= "WHERE tipo = " . $_SESSION['tipo'] . " ";
 $select .= "AND provincia = " . $_SESSION['provincia'] . " ";
 
 // Aprovecho que en el formulario la opción "> ($max_dormitorios)" pasa el valor $max_dormitorios + 1
 $select .= "AND dormitorios ";
-if ($_SESSION['dormitorios'] > $max_dormitorios) {
-	$select .= ">= ";
-}
+$select .= ($_SESSION['dormitorios'] > $max_dormitorios) ? ">= " : "= ";
 $select .= $_SESSION['dormitorios'] . " ";
 
 $select .= "AND precio >= " . $_SESSION['preciomin'] . " ";
@@ -66,21 +64,27 @@ $conn->select_db('inmobiliaria') or die('No se pudo establecer una conexión a l
 $result = $conn->query($select) or die ('Error al hacer la búsqueda: ' . $conn->error);
 
 echo '<h1>Resultados</h1>';
-echo '<table>';
-$num_rows = 0;
-while ($row = $result->fetch_row()) {
-	$num_rows++;
-	echo '<tr>';
 
-	for ($i=0; $i < sizeof($row); $i++) {
-		echo '<td bgcolor="' . ($num_rows % 2 ? '#ddd' : '#eee') . '">' . $row[$i] . '</td>';
+if ($result->num_rows == 0) {
+	echo 'No se han encontrado resultados.';
+} else {
+	$cont = 0;
+	
+	echo '<table id="resultado">';
+	while ($row = $result->fetch_row()) {
+		$cont++;
+		echo '<tr>';
+
+		for ($i=0; $i < sizeof($row); $i++) {
+			echo '<td bgcolor="' . ($cont % 2 ? '#ddd' : '#eee') . '">' . $row[$i] . '</td>';
+		}
+
+		echo '</tr>';
 	}
-
-	echo '</tr>';
+	echo '</table>';
 }
-echo '</table>';
 
-session_destroy();
+echo '<a href="return.php">Hacer otra búsqueda</a>';
 
 ?>
 
