@@ -20,7 +20,7 @@ $viviendas = "CREATE TABLE IF NOT EXISTS viviendas (
 ) ENGINE = MyISAM";
 
 $tipos = "CREATE TABLE IF NOT EXISTS tipos (
-	id int(2) NOT NULL auto_increment,
+	id int(2) NOT NULL,
 	tipo varchar(255) NOT NULL,
 	PRIMARY KEY (id)
 ) ENGINE = MyISAM";
@@ -116,8 +116,12 @@ $insert_provincias = "INSERT INTO provincias (id, nombre_es, nombre_coof) VALUES
 	(52, 'Melilla', NULL);
 ";
 
-$insert_tipos = "INSERT INTO tipos (tipo) VALUES
-	('piso'), ('chalet'), ('apartamento'), ('dúplex'), ('ático');
+$insert_tipos = "INSERT INTO tipos (id, tipo) VALUES
+	(0, 'Piso'),
+	(1, 'Chalet'),
+	(2, 'Apartamento'),
+	(3, 'Dúplex'),
+	(4, 'Ático');
 ";
 
 $insert_viviendas = "INSERT INTO viviendas
