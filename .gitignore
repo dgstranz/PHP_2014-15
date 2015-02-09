@@ -41,3 +41,9 @@ Icon
 Network Trash Folder
 Temporary Items
 .apdisk
+
+# Ignored files in dependencies
+PHPMailer/docs/phpdoc/
+PHPMailer/test/message.txt
+PHPMailer/test/testbootstrap.php
+PHPMailer/build/
