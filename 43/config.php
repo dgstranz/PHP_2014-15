@@ -1,4 +1,5 @@
 <?php
-$user = '';
-$pass = '';
+$mi_email = '';
+$mi_nombre = '';
+$mi_pass = '';
 ?>

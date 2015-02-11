@@ -1,22 +1,23 @@
 <html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<link href="style.css" rel="stylesheet" type="text/css">
 </head>
 <body>
 <?php
 require_once('../PHPMailer/class.phpmailer.php');
 require_once('../PHPMailer/PHPMailerAutoload.php');
 
-if (!isset($_POST['nombre']) || !isset($_POST['email']) || !isset($_POST['mensaje'])) {
+if (!isset($_POST['nombre']) || !isset($_POST['email']) || !isset($_POST['titulo']) || !isset($_POST['mensaje'])) {
 	formulario();
-} elseif (empty(trim($_POST['nombre'])) || empty(trim($_POST['email'])) || empty(trim($_POST['mensaje']))) {
-	echo '<b>Error</b>: debe indicarse como mínimo el nombre, el email y el mensaje que se desea enviar.';
+} elseif (empty(trim($_POST['nombre'])) || empty(trim($_POST['email'])) || empty(trim($_POST['titulo'])) || empty(trim($_POST['mensaje']))) {
+	echo '<p class="error"><b>Error</b>: debe indicarse como mínimo el nombre, el email y el mensaje que se desea enviar.</p>';
 	formulario();
 } elseif (!preg_match('/^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4}$/', $_POST['email'])) {
-	echo '<b>Error</b>: correo electrónico no válido.';
+	echo '<p class="error"><b>Error</b>: correo electrónico no válido.</p>';
 	formulario();
 } else {
-	enviar_correo($_POST['nombre'], $_POST['email'], $_POST['mensaje']);
+	enviar_correo($_POST['nombre'], $_POST['email'], $_POST['titulo'], $_POST['mensaje']);
 }
 
 function formulario() {
@@ -35,8 +36,8 @@ function formulario() {
 			<td><input type="email" name="email" value="' . (isset($_POST['email']) ? $_POST['email'] : '') . '"></td>
 		</tr>
 		<tr>
-			<td>Teléfono</td>
-			<td><input type="tel" name="tel" value="' . (isset($_POST['tel']) ? $_POST['tel'] : '') . '"></td>
+			<td>Título</td>
+			<td><input type="text" name="titulo" value="' . (isset($_POST['titulo']) ? $_POST['titulo'] : '') . '"></td>
 		</tr>
 		<tr>
 			<td>Mensaje</td>
@@ -49,41 +50,39 @@ function formulario() {
 	</form>';
 }
 
-function enviar_correo($nombre, $email, $mensaje) {
+function enviar_correo($nombre, $email, $titulo, $mensaje) {
 	include('config.php');
 	$mail = new PHPMailer();
 	$mail->IsSMTP();
-	$mail->SMTPDebug = 2;
+	$mail->SMTPDebug = 0;
 	$mail->SMTPAuth = true;
 	$mail->SMTPSecure = 'ssl';
 	$mail->Host = 'smtp.gmail.com';
 	$mail->Port = 465;
 	$mail->CharSet = 'UTF-8';
 
-	$mail->Username = $user;
-	$mail->Password = $pass;
+	$mail->Username = $mi_email;
+	$mail->Password = $mi_pass;
 
 	// Rellenas aquí los datos
-	$mail->SetFrom('', 'Servidor');
-	$mail->AddReplyTo($email, $nombre);
+	$mail->SetFrom($mi_email, $mi_nombre);
+	$mail->AddReplyTo($mi_email, $mi_nombre);
 
-	$mail->AddAddress('', '');
+	$mail->AddAddress($email, $nombre);
 
-	$mail->Subject = 'Prueba de correo electrónico por Sendmail';
+	$mail->Subject = $titulo;
 
 	$mensaje = wordwrap($mensaje, 78, "\r\n");
 
 	$mail->MsgHTML($mensaje);
 	$mail->AltBody = strip_tags($mensaje);
 
-	$cabeceras = 'From: webmaster@example.com' . "\r\n" .
-	    'Reply-To: webmaster@example.com' . "\r\n" .
-	    'X-Mailer: PHP/' . phpversion();
+	$cabeceras = 'X-Mailer: PHP/' . phpversion();
 
 	if($mail->Send()) {
-		echo 'Correo enviado';
+		echo '<p class="exito">Correo enviado</p>';
 	} else {
-		echo 'Error: ' . $mail->ErrorInfo;
+		echo '<p class="error"><b>Error</b>: ' . $mail->ErrorInfo . '</p>';
 	}
 }
 
