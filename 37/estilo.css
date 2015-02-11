@@ -2,7 +2,7 @@ body {
 	font-family: Verdana;
 }
 
-h1 {
+h1, h2, h3, h4, h5, h6 {
 	color: rgb(0, 0, 128);
 }
 
@@ -44,6 +44,15 @@ table .buttons {
 	-webkit-border-vertical-spacing: 0px;
 }
 
-#resultado td {
+#resultado th, #resultado td {
 	padding: 3px 5px;
+	text-align: center;
+}
+
+td.color0 {
+	background-color: #d0ffa0;
+}
+
+td.color1 {
+	background-color: #f0ffa0;
 }

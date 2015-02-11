@@ -23,7 +23,6 @@ if (isset($_POST['back'])) {
 cabecera(4);
 formulario();
 busqueda();
-var_dump($_SESSION);
 
 function formulario() {
 	global $extras;
