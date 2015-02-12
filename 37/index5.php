@@ -12,7 +12,7 @@ include 'opciones.php';
 
 if (isset($_POST['back'])) {
 	header('Location: index3.php');
-} else {
+} elseif (!isset($_POST['recibir_email'])) {
 	foreach ($extras as $extra) {
 		if (isset($_POST[$extra])) {
 			$_SESSION['extras'][$extra] = $_POST[$extra];
@@ -21,12 +21,18 @@ if (isset($_POST['back'])) {
 			header('Location: index4.php');
 		}
 	}
+} elseif (!isset($_POST['nombre']) || empty(trim($_POST['nombre'])) || !isset($_POST['email']) || empty(trim($_POST['email']))) {
+	echo '<p class="error"><b>Error</b>: deben rellenarse los campos.</p>';
+} elseif (!preg_match('/^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4}$/', $_POST['email'])) {
+	echo '<p class="error"><b>Error</b>: correo electrónico no válido.</p>';
+} else {
+
 }
 
 cabecera(5);
-busqueda();
+mostrar_resultados();
 
-function busqueda() {
+function buscar_viviendas() {
 	global $tipos, $provincias, $max_dormitorios, $extras;
 	require_once 'bd.php';
 
@@ -61,88 +67,95 @@ function busqueda() {
 		}
 	}
 
-	$result = $conn->query($select) or die ('Error al hacer la búsqueda: ' . $conn->error);
+	$sql_result = $conn->query($select) or die ('Error al hacer la búsqueda: ' . $conn->error);
+	return $sql_result;
+}
 
+function mostrar_resultados() {
 	echo '<h2>Resultados</h2>';
 
-	if ($result->num_rows == 0) {
-		echo '<p>No se han encontrado viviendas con estas especificaciones.</p>';
-	} else {
-		echo '<form action="' . $_SERVER['PHP_SELF'] . '" method="POST">';
-		echo '<p>';
-		if ($result->num_rows == 1) {
-			echo 'Se ha encontrado <b>1</b> vivienda.';
+	if (!isset($_SESSION['result'])) {
+		$sql_result = buscar_viviendas();
+
+		$result = '';
+
+		if ($sql_result->num_rows == 0) {
+			$result .= '<p>No se han encontrado viviendas con estas especificaciones.</p>';
 		} else {
-			echo 'Se han encontrado <b>' . $result->num_rows . '</b> viviendas.';
-		}
-		echo '</p>';
-		$cont = 0;
-		
-		echo '<table id="resultado">';
-		echo '<tr>';
-		echo '	<th>Tipo</th>';
-		echo '	<th>Provincia</th>';
-		echo '	<th>Dormitorios</th>';
-		echo '	<th>Precio</th>';
-		echo '	<th>Extras</th>';
-		echo '	<th>Me interesa</th>';
-		echo '</tr>';
-		while ($row = $result->fetch_row()) {
-			$cont++;
-			echo '<tr>';
-
-			for ($i=1; $i < sizeof($row) - sizeof($extras); $i++) {
-				echo '<td class="color' . ($cont % 2) . '">' . $row[$i] . '</td>';
+			$result .= '<form action="' . $_SERVER['PHP_SELF'] . '" method="POST">';
+			$result .= '<input type="hidden" name="recibir_email" value="true">';
+			$result .= '<p>';
+			if ($sql_result->num_rows == 1) {
+				$result .= 'Se ha encontrado <b>1</b> vivienda.';
+			} else {
+				$result .= 'Se han encontrado <b>' . $sql_result->num_rows . '</b> viviendas.';
 			}
+			$result .= '</p>';
+			
+			$cont = 0;
+			
+			$result .= '<table id="resultado">';
+			$result .= '<tr>';
+			$result .= '	<th>Tipo</th>';
+			$result .= '	<th>Provincia</th>';
+			$result .= '	<th>Dormitorios</th>';
+			$result .= '	<th>Precio</th>';
+			$result .= '	<th>Extras</th>';
+			$result .= '	<th>Me interesa</th>';
+			$result .= '</tr>';
+			while ($row = $sql_result->fetch_row()) {
+				$cont++;
+				$result .= '<tr>';
 
-			echo '<td class="color' . ($cont % 2) . '">';
-
-			$str_extras = '';
-			for ($i=0; $i < sizeof($extras); $i++) { 
-				if ($row[sizeof($row) - sizeof($extras) + $i] >0) {
-					if (!empty($str_extras)) {
-						$str_extras .= ', ';
-					}
-					$str_extras .= $extras[$i];
+				for ($i=1; $i < sizeof($row) - sizeof($extras); $i++) {
+					$result .= '<td class="color' . ($cont % 2) . '">' . $row[$i] . '</td>';
 				}
+
+				$result .= '<td class="color' . ($cont % 2) . '">';
+
+				$str_extras = '';
+				for ($i=0; $i < sizeof($extras); $i++) { 
+					if ($row[sizeof($row) - sizeof($extras) + $i] >0) {
+						if (!empty($str_extras)) {
+							$str_extras .= ', ';
+						}
+						$str_extras .= $extras[$i];
+					}
+				}
+
+				$result .= $str_extras . '</td>';
+
+				$result .= '<td class="color' . ($cont % 2) . '">';
+				$result .= '<input type="checkbox" value="' . $row[0] . '">';
+				$result .= '</td>';
+				$result .= '</tr>';
 			}
 
-			echo $str_extras . '</td>';
+			$result .= '</table>';
 
-			echo '<td class="color' . ($cont % 2) . '">';
-			echo '<input type="checkbox" value="' . $row[0] . '">';
-			echo '</td>';
-			echo '</tr>';
+			$result .= '<h2>Recibir resultados por correo electrónico</h2>';
+			$result .= 'Rellene sus datos y se le enviará un correo electrónico con información adicional de las viviendas seleccionadas.';
+
+			$result .= '<table>
+					<tr>
+						<td>Nombre</td>
+						<td><input type="text" name="nombre" value="' . (isset($_POST['nombre']) ? $_POST['nombre'] : '') . '"></td>
+					</tr>
+					<tr>
+						<td>Email</td>
+						<td><input type="email" name="email" value="' . (isset($_POST['email']) ? $_POST['email'] : '') . '"></td>
+					</tr>
+					<tr>
+						<td colspan="2"><input type="submit" value="Enviar"></td>
+					</tr>
+				</table>
+				</form>';
+
+			$_SESSION['result'] = $result;	
 		}
-
-		echo '</table>';
-
-		echo '<h2>Recibir resultados por correo electrónico</h2>';
-		echo 'Rellene sus datos y se le enviará un correo electrónico con información adicional de las viviendas seleccionadas.';
-
-		echo '<table>
-			<tr>
-				<td>Nombre</td>
-				<td><input type="text" name="nombre" value="' . (isset($_POST['nombre']) ? $_POST['nombre'] : '') . '"></td>
-			</tr>
-			<tr>
-				<td>Email</td>
-				<td><input type="email" name="email" value="' . (isset($_POST['email']) ? $_POST['email'] : '') . '"></td>
-			</tr>
-			<tr>
-				<td>Asunto</td>
-				<td><input type="text" name="titulo" value="' . (isset($_POST['asunto']) ? $_POST['asunto'] : '') . '"></td>
-			</tr>
-			<tr>
-				<td>Mensaje</td>
-				<td><textarea rows="8" cols="50" name="mensaje">' . (isset($_POST['mensaje']) ? $_POST['mensaje'] : '') . '</textarea></td>
-			</tr>
-			<tr>
-				<td colspan="2"><input type="submit" value="Enviar"></td>
-			</tr>
-		</table>
-		</form>';
 	}
+
+	echo $_SESSION['result'];
 
 	echo '<br><a href="return.php">Hacer otra búsqueda</a>';
 }
