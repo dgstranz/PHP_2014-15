@@ -33,22 +33,46 @@ echo '<h2>Resultados</h2>';
 
 if (!isset($_SESSION['resultado'])) {
 	$sql_result = buscar_viviendas();
-	$_SESSION['resultado'] = obtener_resultados($sql_result);
+	$_SESSION['resultado'] = array();
+	$_SESSION['resultado']['numero'] = $sql_result->num_rows;
+	$_SESSION['resultado']['tabla'] = generar_tabla($sql_result);
 }
 
 if ($_SESSION['resultado']['numero'] == 0) {
 	echo '<p>No se han encontrado viviendas con estas especificaciones.</p>';
 } else {
+	echo '<form action="' . $_SERVER['PHP_SELF'] . '" method="POST">';
+	echo '<input type="hidden" name="recibir_email" value="true">';
+
 	if ($_SESSION['resultado']['numero'] == 1) {
-		echo 'Se ha encontrado <b>1</b> vivienda.';
+		echo '<p>Se ha encontrado <b>1</b> vivienda.</p>';
 	} else {
-		echo 'Se han encontrado <b>' . $_SESSION['resultado']['numero'] . '</b> viviendas.';
+		echo '<p>Se han encontrado <b>' . $_SESSION['resultado']['numero'] . '</b> viviendas.</p>';
 	}
+
+	echo $_SESSION['resultado']['tabla'];
+
+	echo '<h2>Recibir resultados por correo electrónico</h2>';
+	echo 'Rellene sus datos y se le enviará un correo electrónico con información adicional de las viviendas seleccionadas.';
+
+	echo '<table>
+			<tr>
+				<td>Nombre</td>
+				<td><input type="text" name="nombre" value="' . (isset($_POST['nombre']) ? $_POST['nombre'] : '') . '"></td>
+			</tr>
+			<tr>
+				<td>Email</td>
+				<td><input type="email" name="email" value="' . (isset($_POST['email']) ? $_POST['email'] : '') . '"></td>
+			</tr>
+			<tr>
+				<td colspan="2"><input type="submit" value="Enviar"></td>
+			</tr>
+		</table>
+		</form>';
 }
 
-
-echo $_SESSION['result'];
 echo '<br><a href="return.php">Hacer otra búsqueda</a>';
+
 
 function buscar_viviendas() {
 	global $tipos, $provincias, $max_dormitorios, $extras;
@@ -89,57 +113,10 @@ function buscar_viviendas() {
 	return $sql_result;
 }
 
-function obtener_resultados($sql_result) {
-	$resultado = array();
-	$resultado['numero'] = $sql_result->num_rows;
-	$resumen = '';
-	$tabla = '';
-	$formulario = '';
-
-	if ($sql_result->num_rows == 0) {
-		$resumen .= '<p>No se han encontrado viviendas con estas especificaciones.</p>';
-	} else {
-		$formulario .= '<form action="' . $_SERVER['PHP_SELF'] . '" method="POST">';
-		$formulario .= '<input type="hidden" name="recibir_email" value="true">';
-		$resumen .= '<p>';
-		if ($sql_result->num_rows == 1) {
-			$resumen .= 'Se ha encontrado <b>1</b> vivienda.';
-		} else {
-			$resumen .= 'Se han encontrado <b>' . $sql_result->num_rows . '</b> viviendas.';
-		}
-		$resumen .= '</p>';
-
-		$cont = 0;
-		
-		$tabla = generar_tabla($sql_result);
-
-		$formulario .= '<h2>Recibir resultados por correo electrónico</h2>';
-		$formulario .= 'Rellene sus datos y se le enviará un correo electrónico con información adicional de las viviendas seleccionadas.';
-
-		$formulario .= '<table>
-				<tr>
-					<td>Nombre</td>
-					<td><input type="text" name="nombre" value="' . (isset($_POST['nombre']) ? $_POST['nombre'] : '') . '"></td>
-				</tr>
-				<tr>
-					<td>Email</td>
-					<td><input type="email" name="email" value="' . (isset($_POST['email']) ? $_POST['email'] : '') . '"></td>
-				</tr>
-				<tr>
-					<td colspan="2"><input type="submit" value="Enviar"></td>
-				</tr>
-			</table>
-			</form>';
-	}
-
-	$resultado['resumen'] = $resumen;
-	$resultado['tabla'] = $tabla;
-	$resultado['formulario'] = $formulario;
-
-	return $resultado;
-}
-
 function generar_tabla($sql_result) {
+	global $extras;
+
+	$cont = 0;	
 	$tabla = '';
 
 	$tabla .= '<table id="resultado">';
