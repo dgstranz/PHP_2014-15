@@ -31,12 +31,18 @@ echo '  <th>Tipo</th>';
 echo '  <th>Permisos</th>';
 echo '</tr>';
 
-foreach($content as $key => $value) {
+foreach($content as $key => $file) {
   echo '<tr>';
-  echo '<td><a href="' . $dir . $value . '">' . $value . '</a></td>';
-  echo '<td>' . filesize($dir . $value) . '</td>';
 
-  $file_perms = fileperms($dir . $value);
+  echo '<td>';
+  echo '<img src="http://localhost/icons/folder.gif">';
+  echo '<pre>' . "\t" . '</pre>';
+  echo '<a href="' . $dir . $file . '">' . $file . '</a>';
+  echo '</td>';
+
+  echo '<td>' . filesize($dir . $file) . '</td>';
+
+  $file_perms = fileperms($dir . $file);
   // echo base_convert($file_perms, 10, 8) . ' ';
 
   if ($file_perms >= 0140000) {
@@ -59,7 +65,7 @@ foreach($content as $key => $value) {
 
   echo '<td>' . $abbr['type'][$type] . '</td>';
 
-  echo '<td><abbr class="type" title="' . $abbr['type'][$type] . '">' . $type . '</abbr>';
+  echo '<td><pre><abbr class="type" title="' . $abbr['type'][$type] . '">' . $type . '</abbr>';
 
   $perms = array(
     'user' => array(),
@@ -100,8 +106,9 @@ foreach($content as $key => $value) {
     }
   }
 
-
-  echo '</td>';
+  echo '</pre></td>';
+  echo '<td>✗ (borrar)</td>';
+  echo '<td>✎ (renombrar)</td>';
   echo '</tr>';
 }
 echo '</table>';
