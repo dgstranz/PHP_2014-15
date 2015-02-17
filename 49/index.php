@@ -1,6 +1,7 @@
 <html>
 <head>
   <meta http-equiv='Content-type' content='text/html; charset=utf-8'/>
+  <link rel='stylesheet' type='text/css' href='style.css'>
 </head>
 <body>
 
@@ -8,6 +9,7 @@
 // Para que se muestren los iconos predefinidos de WAMP
 // http://stackoverflow.com/questions/26607363/wampserver-icons-doesnt-work
 
+require_once 'types.php';
 $dir = '../';
 
 echo '<h2><a href="' . $dir . '">Proyectos PHP</a></h2>';
@@ -34,58 +36,68 @@ foreach($content as $key => $value) {
   echo '<td><a href="' . $dir . $value . '">' . $value . '</a></td>';
   echo '<td>' . filesize($dir . $value) . '</td>';
 
-  $perms = fileperms($dir . $value);
+  $file_perms = fileperms($dir . $value);
+  // echo base_convert($file_perms, 10, 8) . ' ';
 
-  echo '<td>';
-  // echo base_convert($perms, 10, 8) . ' ';
-
-  if ($perms >= 0140000) {
-    echo 'Socket';
-  } elseif ($perms >= 0120000) {
-    echo 'Enlace simbólico';
-  } elseif ($perms >= 0100000) {
-    echo 'Archivo';
-  } elseif ($perms >= 060000) {
-    echo 'Arch. especial de bloque';
-  } elseif ($perms >= 040000) {
-    echo 'Directorio';
-  } elseif ($perms >= 020000) {
-    echo 'Arch. especial de caracteres';
-  } elseif ($perms >= 010000) {
-    echo 'Tubería nombrada';
+  if ($file_perms >= 0140000) {
+    $type = 's';
+  } elseif ($file_perms >= 0120000) {
+    $type = 'l';
+  } elseif ($file_perms >= 0100000) {
+    $type = '-';
+  } elseif ($file_perms >= 060000) {
+    $type = 'b';
+  } elseif ($file_perms >= 040000) {
+    $type = 'd';
+  } elseif ($file_perms >= 020000) {
+    $type = 'c';
+  } elseif ($file_perms >= 010000) {
+    $type = 'p';
   } else {
-    echo 'Desconocido';
+    $type = 'u';
   }
 
-  echo '</td>';
+  echo '<td>' . $abbr['type'][$type] . '</td>';
 
-  echo '<td>';
+  echo '<td><abbr class="type" title="' . $abbr['type'][$type] . '">' . $type . '</abbr>';
+
+  $perms = array(
+    'user' => array(),
+    'group' => array(),
+    'other' => array()
+  );
 
   // Usuario
-  echo ($perms & 0400) ? 'r' : '-';
-  echo ($perms & 0200) ? 'w' : '-';
-  if ($perms & 0100) {
-    echo ($perms & 04000) ? 's' : 'x';
+  $perms['user']['read'] = ($file_perms & 0400) ? 'r' : '-';
+  $perms['user']['write'] = ($file_perms & 0200) ? 'w' : '-';
+  if ($file_perms & 0100) {
+    $perms['user']['execute'] = ($file_perms & 04000) ? 's' : 'x';
   } else {
-    echo ($perms & 04000) ? 'S' : '-';
+    $perms['user']['execute'] = ($file_perms & 04000) ? 'S' : '-';
   }
 
   // Grupo
-  echo ($perms & 040) ? 'r' : '-';
-  echo ($perms & 020) ? 'w' : '-';
-  if ($perms & 010) {
-    echo ($perms & 02000) ? 's' : 'x';
+  $perms['group']['read'] = ($file_perms & 040) ? 'r' : '-';
+  $perms['group']['write'] = ($file_perms & 020) ? 'w' : '-';
+  if ($file_perms & 010) {
+    $perms['group']['execute'] = ($file_perms & 02000) ? 's' : 'x';
   } else {
-    echo ($perms & 02000) ? 'S' : '-';
+    $perms['group']['execute'] = ($file_perms & 02000) ? 'S' : '-';
   }
 
   // Mundo
-  echo ($perms & 04) ? 'r' : '-';
-  echo ($perms & 02) ? 'w' : '-';
-  if ($perms & 01) {
-    echo ($perms & 01000) ? 't' : 'x';
+  $perms['other']['read'] = ($file_perms & 04) ? 'r' : '-';
+  $perms['other']['write'] = ($file_perms & 02) ? 'w' : '-';
+  if ($file_perms & 01) {
+    $perms['other']['execute'] = ($file_perms & 01000) ? 't' : 'x';
   } else {
-    echo ($perms & 01000) ? 'T' : '-';
+    $perms['other']['execute'] = ($file_perms & 01000) ? 'T' : '-';
+  }
+
+  foreach ($perms as $usertype => $userperms) {
+    foreach ($userperms as $perm => $value) {
+      echo '<abbr class="' . $usertype . ' ' . $perm . '" title="' . $abbr[$usertype][$perm][$value] . '">' . $value . '</abbr>';
+    }
   }
 
 
@@ -93,6 +105,7 @@ foreach($content as $key => $value) {
   echo '</tr>';
 }
 echo '</table>';
+
 ?>
 
 </hody>

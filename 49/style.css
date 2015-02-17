@@ -1,0 +1,39 @@
+abbr.type {
+	background-color: rgb(255, 255, 192);
+}
+
+abbr.user.read {
+	background-color: rgba(192, 255, 128, 0.4);
+}
+
+abbr.user.write {
+	background-color: rgba(192, 255, 128, 0.7);
+}
+
+abbr.user.execute {
+	background-color: rgba(192, 255, 128, 1);
+}
+
+abbr.group.read {
+	background-color: rgba(128, 192, 255, 0.4);
+}
+
+abbr.group.write {
+	background-color: rgba(128, 192, 255, 0.7);
+}
+
+abbr.group.execute {
+	background-color: rgba(128, 192, 255, 1);
+}
+
+abbr.other.read {
+	background-color: rgba(255, 128, 255, 0.4);
+}
+
+abbr.other.write {
+	background-color: rgba(255, 128, 255, 0.7);
+}
+
+abbr.other.execute {
+	background-color: rgba(255, 128, 255, 1);
+}
