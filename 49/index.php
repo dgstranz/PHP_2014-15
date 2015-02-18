@@ -29,22 +29,44 @@ echo '  <th>Nombre</th>';
 echo '  <th>Tamaño</th>';
 echo '  <th>Tipo</th>';
 echo '  <th>Permisos</th>';
+echo '  <th colspan="2">Acciones</th>';
 echo '</tr>';
 
 foreach($content as $key => $file) {
+  /* fileperms devuelve un número octal que contiene información sobre el tipo de fichero
+  *  y los permisos que tiene. */
+  $file_perms = fileperms($dir . $file);
+  $type = get_type($file_perms);
+  $perms = get_perms($file_perms);
+
   echo '<tr>';
 
   echo '<td>';
-  echo '<img src="http://localhost/icons/folder.gif">';
+  echo '<img src="http://localhost/icons/' . $abbr['icon'][$type] . '">';
   echo '<pre>' . "\t" . '</pre>';
   echo '<a href="' . $dir . $file . '">' . $file . '</a>';
   echo '</td>';
 
-  echo '<td>' . filesize($dir . $file) . '</td>';
+  echo '<td style="text-align: right;">' . filesize($dir . $file) . ' bytes</td>';
 
-  $file_perms = fileperms($dir . $file);
-  // echo base_convert($file_perms, 10, 8) . ' ';
+  echo '<td>' . $abbr['type'][$type] . '</td>';
 
+  echo '<td><pre><abbr class="type" title="' . $abbr['type'][$type] . '">' . $type . '</abbr>';
+
+  foreach ($perms as $usertype => $userperms) {
+    foreach ($userperms as $perm => $value) {
+      echo '<abbr class="' . $usertype . ' ' . $perm . '" title="' . $abbr[$usertype][$perm][$value] . '">' . $value . '</abbr>';
+    }
+  }
+
+  echo '</pre></td>';
+  echo '<td>✗ (borrar)</td>';
+  echo '<td>✎ (renombrar)</td>';
+  echo '</tr>';
+}
+echo '</table>';
+
+function get_type($file_perms) {
   if ($file_perms >= 0140000) {
     $type = 's';
   } elseif ($file_perms >= 0120000) {
@@ -63,10 +85,10 @@ foreach($content as $key => $file) {
     $type = 'u';
   }
 
-  echo '<td>' . $abbr['type'][$type] . '</td>';
+  return $type;
+}
 
-  echo '<td><pre><abbr class="type" title="' . $abbr['type'][$type] . '">' . $type . '</abbr>';
-
+function get_perms($file_perms) {
   $perms = array(
     'user' => array(),
     'group' => array(),
@@ -100,18 +122,8 @@ foreach($content as $key => $file) {
     $perms['other']['execute'] = ($file_perms & 01000) ? 'T' : '-';
   }
 
-  foreach ($perms as $usertype => $userperms) {
-    foreach ($userperms as $perm => $value) {
-      echo '<abbr class="' . $usertype . ' ' . $perm . '" title="' . $abbr[$usertype][$perm][$value] . '">' . $value . '</abbr>';
-    }
-  }
-
-  echo '</pre></td>';
-  echo '<td>✗ (borrar)</td>';
-  echo '<td>✎ (renombrar)</td>';
-  echo '</tr>';
+  return $perms;
 }
-echo '</table>';
 
 ?>
 

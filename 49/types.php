@@ -10,6 +10,16 @@ $abbr = array(
 		'p' => 'Tubería nombrada',
 		'u' => 'Desconocido'
 	),
+	'icon' => array(
+		's' => 'patch.gif',
+		'l' => 'link.gif',
+		'-' => 'generic.gif',
+		'b' => 'box2.gif',
+		'd' => 'folder.gif',
+		'c' => 'script.gif',
+		'p' => 'transfer.gif',
+		'u' => 'unknown.gif'
+	),
 	'user' => array(
 		'read' => array(
 			'r' => 'El dueño tiene permisos de lectura',
@@ -59,34 +69,4 @@ $abbr = array(
 		)
 	)
 );
-
-/*
-  // Usuario
-  echo ($perms & 0400) ? 'r' : '-';
-  echo ($perms & 0200) ? 'w' : '-';
-  if ($perms & 0100) {
-    echo ($perms & 04000) ? 's' : 'x';
-  } else {
-    echo ($perms & 04000) ? 'S' : '-';
-  }
-
-  // Grupo
-  echo ($perms & 040) ? 'r' : '-';
-  echo ($perms & 020) ? 'w' : '-';
-  if ($perms & 010) {
-    echo ($perms & 02000) ? 's' : 'x';
-  } else {
-    echo ($perms & 02000) ? 'S' : '-';
-  }
-
-  // Mundo
-  echo ($perms & 04) ? 'r' : '-';
-  echo ($perms & 02) ? 'w' : '-';
-  if ($perms & 01) {
-    echo ($perms & 01000) ? 't' : 'x';
-  } else {
-    echo ($perms & 01000) ? 'T' : '-';
-  }
-  */
-
 ?>
