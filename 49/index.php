@@ -19,6 +19,17 @@ $content = array();
 while (($entry = readdir($handle)) !== false) {
   array_push($content, $entry);
 }
+
+// Quito . (carpeta actual) y .. (carpeta padre) del resultado de la búsqueda
+$key = array_search('.', $content);
+if (gettype($key) == 'integer') {
+  unset($content[$key]);
+}
+$key = array_search('..', $content);
+if (gettype($key) == 'integer') {
+  unset($content[$key]);
+}
+
 sort($content);
 
 $count = 0;
@@ -39,6 +50,8 @@ foreach($content as $key => $file) {
   $type = get_type($file_perms);
   $perms = get_perms($file_perms);
 
+  $size = get_size($dir . $file);
+
   echo '<tr>';
 
   echo '<td>';
@@ -47,7 +60,7 @@ foreach($content as $key => $file) {
   echo '<a href="' . $dir . $file . '">' . $file . '</a>';
   echo '</td>';
 
-  echo '<td style="text-align: right;">' . filesize($dir . $file) . ' bytes</td>';
+  echo '<td style="text-align: right;">' . get_size($dir . $file) . '</td>';
 
   echo '<td>' . $abbr['type'][$type] . '</td>';
 
@@ -123,6 +136,21 @@ function get_perms($file_perms) {
   }
 
   return $perms;
+}
+
+function get_size($file) {
+  $mult = array('bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB');
+  $i = 0;
+  $size = filesize($file);
+  while($size > 1023) {
+    $size /= 1024;
+    $i++;
+  }
+  if ($i == 0) {
+    return $size . ' bytes';
+  } else {
+    return number_format($size, 2, '.', '') . ' ' . $mult[$i] . '&nbsp;&nbsp;&nbsp;';
+  }
 }
 
 ?>
