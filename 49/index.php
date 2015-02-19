@@ -10,11 +10,17 @@
 // http://stackoverflow.com/questions/26607363/wampserver-icons-doesnt-work
 
 require_once 'types.php';
-$dir = '../';
+$root = '../';
 
-echo '<h2><a href="' . $dir . '">Proyectos PHP</a></h2>';
+if (isset($_GET['path']) && !empty($_GET['path'])) {
+  $path = pathinfo($_GET['path'])['dirname'] . '/' . pathinfo($_GET['path'])['basename'] . '/';
+} else {
+  $path = $root;
+}
 
-$handle = opendir($dir);
+echo '<h2><a href="' . $path . '">Proyectos PHP</a></h2>';
+
+$handle = opendir($path);
 $content = array();
 while (($entry = readdir($handle)) !== false) {
   array_push($content, $entry);
@@ -46,21 +52,22 @@ echo '</tr>';
 foreach($content as $key => $file) {
   /* fileperms devuelve un número octal que contiene información sobre el tipo de fichero
   *  y los permisos que tiene. */
-  $file_perms = fileperms($dir . $file);
+  $link = pathinfo($path . $file)['dirname'] . '/' . pathinfo($path . $file)['basename'];
+  $file_perms = fileperms($link);
   $type = get_type($file_perms);
   $perms = get_perms($file_perms);
 
-  $size = get_size($dir . $file);
+  $size = get_size($link);
 
   echo '<tr>';
 
   echo '<td>';
   echo '<img src="http://localhost/icons/' . $abbr['icon'][$type] . '">';
   echo '<pre>' . "\t" . '</pre>';
-  echo '<a href="' . $dir . $file . '">' . $file . '</a>';
+  echo '<a href="' . $_SERVER['PHP_SELF'] . '?path=' . $link . '">' . $file . '</a>';
   echo '</td>';
 
-  echo '<td style="text-align: right;">' . get_size($dir . $file) . '</td>';
+  echo '<td style="text-align: right;">' . get_size($path . $file) . '</td>';
 
   echo '<td>' . $abbr['type'][$type] . '</td>';
 
@@ -77,6 +84,17 @@ foreach($content as $key => $file) {
   echo '<td>✎ (renombrar)</td>';
   echo '</tr>';
 }
+
+if ($path != $root) {
+  echo '<tr>';
+  echo '<td>';
+  echo '<img src="http://localhost/icons/back.gif">';
+  echo '<a href="' . $_SERVER['PHP_SELF'] . '?path=' . pathinfo($path)['dirname'] . '">Volver atrás</a>';
+  var_dump(pathinfo($path));
+  echo '</td>';
+  echo '</tr>';
+}
+
 echo '</table>';
 
 function get_type($file_perms) {
