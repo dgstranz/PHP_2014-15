@@ -9,93 +9,128 @@
 // Para que se muestren los iconos predefinidos de WAMP
 // http://stackoverflow.com/questions/26607363/wampserver-icons-doesnt-work
 
-require_once 'types.php';
-$root = '../';
+$root = '..';
 
 if (isset($_GET['path']) && !empty($_GET['path'])) {
-  $path = pathinfo($_GET['path'])['dirname'] . '/' . pathinfo($_GET['path'])['basename'] . '/';
+  $current_path = pathinfo($_GET['path'])['dirname'] . '/' . pathinfo($_GET['path'])['basename'];
 } else {
-  $path = $root;
+  $current_path = $root;
 }
 
-echo '<h2><a href="' . $path . '">Proyectos PHP</a></h2>';
+echo '<h2>' . $current_path . '</h2>';
 
-$handle = opendir($path);
-$content = array();
-while (($entry = readdir($handle)) !== false) {
-  array_push($content, $entry);
+show_table();
+
+function show_table() {
+  global $root;
+  global $path;
+  global $current_path;
+
+  if (is_dir($current_path)) {
+    echo '<table>';
+    echo '<tr>';
+    echo '  <th>Nombre</th>';
+    echo '  <th>Tamaño</th>';
+    echo '  <th>Tipo</th>';
+    echo '  <th>Permisos</th>';
+    echo '  <th colspan="2">Acciones</th>';
+    echo '</tr>';
+
+    show_files($current_path, true);
+
+    echo '</table>';
+  } else {
+    //echo '<pre>' . file_get_contents($current_path) . '</pre>';
+
+    $size = filesize($current_path);
+    $handle = fopen($current_path,"r");
+    echo '<pre>' . fread($handle, $size) . '</pre>';
+    fclose($handle);
+  }
 }
 
-// Quito . (carpeta actual) y .. (carpeta padre) del resultado de la búsqueda
-$key = array_search('.', $content);
-if (gettype($key) == 'integer') {
-  unset($content[$key]);
-}
-$key = array_search('..', $content);
-if (gettype($key) == 'integer') {
-  unset($content[$key]);
-}
+function show_files($path, $tree) {
+  require 'types.php';
+  global $root;
+  global $current_path;
+  $nesting = sizeof(explode('/', $path)) - sizeof(explode('/', $current_path));
 
-sort($content);
-
-$count = 0;
-
-echo '<table>';
-echo '<tr>';
-echo '  <th>Nombre</th>';
-echo '  <th>Tamaño</th>';
-echo '  <th>Tipo</th>';
-echo '  <th>Permisos</th>';
-echo '  <th colspan="2">Acciones</th>';
-echo '</tr>';
-
-foreach($content as $key => $file) {
-  /* fileperms devuelve un número octal que contiene información sobre el tipo de fichero
-  *  y los permisos que tiene. */
-  $link = pathinfo($path . $file)['dirname'] . '/' . pathinfo($path . $file)['basename'];
-  $file_perms = fileperms($link);
-  $type = get_type($file_perms);
-  $perms = get_perms($file_perms);
-
-  $size = get_size($link);
-
-  echo '<tr>';
-
-  echo '<td>';
-  echo '<img src="http://localhost/icons/' . $abbr['icon'][$type] . '">';
-  echo '<pre>' . "\t" . '</pre>';
-  echo '<a href="' . $_SERVER['PHP_SELF'] . '?path=' . $link . '">' . $file . '</a>';
-  echo '</td>';
-
-  echo '<td style="text-align: right;">' . get_size($path . $file) . '</td>';
-
-  echo '<td>' . $abbr['type'][$type] . '</td>';
-
-  echo '<td><pre><abbr class="type" title="' . $abbr['type'][$type] . '">' . $type . '</abbr>';
-
-  foreach ($perms as $usertype => $userperms) {
-    foreach ($userperms as $perm => $value) {
-      echo '<abbr class="' . $usertype . ' ' . $perm . '" title="' . $abbr[$usertype][$perm][$value] . '">' . $value . '</abbr>';
-    }
+  $handle = opendir($path);
+  $content = array();
+  while (($entry = readdir($handle)) !== false) {
+    array_push($content, $entry);
   }
 
-  echo '</pre></td>';
-  echo '<td>✗ (borrar)</td>';
-  echo '<td>✎ (renombrar)</td>';
-  echo '</tr>';
-}
+  // Quito . (carpeta actual) y .. (carpeta padre) del resultado de la búsqueda
+  $key = array_search('.', $content);
+  if (gettype($key) == 'integer') {
+    unset($content[$key]);
+  }
+  $key = array_search('..', $content);
+  if (gettype($key) == 'integer') {
+    unset($content[$key]);
+  }
 
-if ($path != $root) {
-  echo '<tr>';
-  echo '<td>';
-  echo '<img src="http://localhost/icons/back.gif">';
-  echo '<a href="' . $_SERVER['PHP_SELF'] . '?path=' . pathinfo($path)['dirname'] . '">Volver atrás</a>';
-  var_dump(pathinfo($path));
-  echo '</td>';
-  echo '</tr>';
-}
+  sort($content);
 
-echo '</table>';
+  foreach($content as $key => $file) {
+    /* fileperms devuelve un número octal que contiene información sobre el tipo de fichero
+    *  y los permisos que tiene. */
+    $link = pathinfo($path . '/' . $file)['dirname'] . '/' . pathinfo($path . '/' . $file)['basename'];
+    $file_perms = fileperms($link);
+    $type = get_type($file_perms);
+    $perms = get_perms($file_perms);
+    $size = get_size($link);
+
+    echo '<tr>';
+
+    echo '<td>';
+
+    if ($path != $current_path) {
+      echo '<pre>';
+      for ($i = 0; $i < $nesting; $i++) { 
+        echo "\t";
+      }
+      echo '</pre>';
+    }
+
+    echo '<img src="http://localhost/icons/' . $abbr['icon'][$type] . '"> ';
+    echo '<a href="' . $_SERVER['PHP_SELF'] . '?path=' . $link . '">' . $file . '</a>';
+    echo '</td>';
+
+    echo '<td style="text-align: right;">' . get_size($path . '/' . $file) . '</td>';
+
+    echo '<td>' . $abbr['type'][$type] . '</td>';
+
+    echo '<td><pre><abbr class="type" title="' . $abbr['type'][$type] . '">' . $type . '</abbr>';
+
+    foreach ($perms as $usertype => $userperms) {
+      foreach ($userperms as $perm => $value) {
+        echo '<abbr class="' . $usertype . ' ' . $perm . '" title="' . $abbr[$usertype][$perm][$value] . '">' . $value . '</abbr>';
+      }
+    }
+
+    echo '</pre></td>';
+    echo '<td>✗ (borrar)</td>';
+    echo '<td>✎ (renombrar)</td>';
+    echo '</tr>';
+
+
+    if ($tree && $type == 'd') {
+      show_files($link, $tree);
+    }
+
+  }
+
+  if ($path != $root && $path == $current_path) {
+    echo '<tr>';
+    echo '<td>';
+    echo '<img src="http://localhost/icons/back.gif">';
+    echo '<a href="' . $_SERVER['PHP_SELF'] . '?path=' . pathinfo($path)['dirname'] . '"> Volver atrás</a>';
+    echo '</td>';
+    echo '</tr>';
+  }
+}
 
 function get_type($file_perms) {
   if ($file_perms >= 0140000) {
