@@ -2,16 +2,17 @@ body {
 	font-family: Verdana;
 }
 
-table {
+table#contents {
 	padding-bottom: 50px;
 }
 
-td {
+table#contents td {
 	font-family: monospace;
-	padding: 0px 5px;
+	padding-left: 5px;
+	padding-right: 5px;
 }
 
-tr:hover {
+table#contents tr:hover {
 	background-color: rgb(240, 240, 240);
 }
 
@@ -20,8 +21,9 @@ pre {
 	display: inline;
 }
 
-td {
+table#contents td {
 	vertical-align: bottom;
+	border-bottom: 1px solid rgb(240, 240, 240);
 }
 
 abbr {

@@ -6,9 +6,11 @@
 <body>
 
 <?php
+session_start();
 // Para que se muestren los iconos predefinidos de WAMP
 // http://stackoverflow.com/questions/26607363/wampserver-icons-doesnt-work
 
+// Inicializar variables de ruta
 $root = '..';
 
 if (isset($_GET['path']) && !empty($_GET['path'])) {
@@ -17,39 +19,70 @@ if (isset($_GET['path']) && !empty($_GET['path'])) {
   $current_path = $root;
 }
 
-echo '<h2>' . $current_path . '</h2>';
 
-show_table();
+// ¿Mostrar subcarpetas?
+if (!isset($_SESSION['tree'])) {
+  $_SESSION['tree'] = false;
+}
 
-function show_table() {
-  global $root;
-  global $path;
-  global $current_path;
-
-  if (is_dir($current_path)) {
-    echo '<table>';
-    echo '<tr>';
-    echo '  <th>Nombre</th>';
-    echo '  <th>Tamaño</th>';
-    echo '  <th>Tipo</th>';
-    echo '  <th>Permisos</th>';
-    echo '  <th colspan="2">Acciones</th>';
-    echo '</tr>';
-
-    show_files($current_path, true);
-
-    echo '</table>';
-  } else {
-    //echo '<pre>' . file_get_contents($current_path) . '</pre>';
-
-    $size = filesize($current_path);
-    $handle = fopen($current_path,"r");
-    echo '<pre>' . fread($handle, $size) . '</pre>';
-    fclose($handle);
+if (isset($_POST['dir'])) {
+  if ($_POST['dir'] == 'tree') {
+    $_SESSION['tree'] = !$_SESSION['tree'];
   }
 }
 
-function show_files($path, $tree) {
+
+echo '<h2>' . $current_path . '</h2>';
+
+if (is_dir($current_path)) {
+  show_dir_options();
+
+  echo '<table id="contents">';
+  echo '<tr>';
+  echo '  <th>Nombre</th>';
+  echo '  <th>Tamaño</th>';
+  echo '  <th>Tipo</th>';
+  echo '  <th>Permisos</th>';
+  echo '  <th colspan="2">Acciones</th>';
+  echo '</tr>';
+
+  show_files($current_path);
+
+  echo '</table>';
+} else {
+  //echo '<pre>' . file_get_contents($current_path) . '</pre>';
+
+  $size = filesize($current_path);
+  $handle = fopen($current_path,"r");
+  echo '<pre>' . fread($handle, $size) . '</pre>';
+  fclose($handle);
+}
+
+function show_dir_options() {
+  global $current_path;
+  echo '<h2>Opciones de carpeta</h2>';
+  echo '<form action="' . $_SERVER['PHP_SELF'] . '?path=' . $current_path . '" method="POST">';
+  echo '  <table>';
+  echo '    <tr>';
+  echo '      <td><input type="radio" name="dir" value="create"> Crear subcarpeta:</td>';
+  echo '      <td><input name="name" type="text" placeholder="Nombre"></td>';
+  echo '    </tr>';
+  echo '    <tr>';
+  echo '      <td><input type="radio" name="dir" value="tree"> ' . ($_SESSION['tree'] ? 'Mostrar solo carpeta actual' : 'Mostrar carpetas y subcarpetas') . '</td>';
+  echo '      <td></td>';
+  echo '    </tr>';
+  echo '    <tr>';
+  echo '      <td><input type="radio" name="dir" value="delete"> Borrar</td>';
+  echo '      <td></td>';
+  echo '    </tr>';
+  echo '    <tr>';
+  echo '      <td colspan="2"><input type="submit" value="Enviar"></td>';
+  echo '    </tr>';
+  echo '  </table>';
+  echo '</form>';
+}
+
+function show_files($path) {
   require 'types.php';
   global $root;
   global $current_path;
@@ -69,6 +102,11 @@ function show_files($path, $tree) {
   $key = array_search('..', $content);
   if (gettype($key) == 'integer') {
     unset($content[$key]);
+  }
+
+  if (sizeof($content) == 0) {
+    echo '<tr><td colspan="4">Carpeta vacía</td></tr>';
+    return 0;
   }
 
   sort($content);
@@ -111,15 +149,14 @@ function show_files($path, $tree) {
     }
 
     echo '</pre></td>';
-    echo '<td>✗ (borrar)</td>';
-    echo '<td>✎ (renombrar)</td>';
+    echo '<td><a href="borrar.php?path=' . $link .'">Borrar</a></td>';
+    echo '<td><a href="renombrar.php?path=' . $link . '">Renombrar</a></td>';
     echo '</tr>';
 
 
-    if ($tree && $type == 'd') {
-      show_files($link, $tree);
+    if ($_SESSION['tree'] && $type == 'd') {
+      show_files($link);
     }
-
   }
 
   if ($path != $root && $path == $current_path) {
@@ -130,6 +167,8 @@ function show_files($path, $tree) {
     echo '</td>';
     echo '</tr>';
   }
+
+  return sizeof($content);
 }
 
 function get_type($file_perms) {
