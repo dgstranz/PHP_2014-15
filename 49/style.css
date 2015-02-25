@@ -26,6 +26,18 @@ table#contents td {
 	border-bottom: 1px solid rgb(240, 240, 240);
 }
 
+#options {
+	background-color: rgb(224, 240, 255);
+}
+
+#options h2 {
+	background-color: rgba(0, 0, 0, 0.1);
+}
+
+#options h2, #options table {
+	padding: 5px;
+}
+
 abbr {
 	padding: 3px 1px 1px;
 }

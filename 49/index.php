@@ -19,20 +19,13 @@ if (isset($_GET['path']) && !empty($_GET['path'])) {
   $current_path = $root;
 }
 
-
-// ¿Mostrar subcarpetas?
+// Por defecto no se muestran las subcarpetas
 if (!isset($_SESSION['tree'])) {
   $_SESSION['tree'] = false;
 }
 
-if (isset($_POST['dir'])) {
-  if ($_POST['dir'] == 'tree') {
-    $_SESSION['tree'] = !$_SESSION['tree'];
-  }
-}
 
-
-echo '<h2>' . $current_path . '</h2>';
+echo '<h1>Ruta actual: ' . $current_path . '</h1>';
 
 if (is_dir($current_path)) {
   show_dir_options();
@@ -43,13 +36,14 @@ if (is_dir($current_path)) {
   echo '  <th>Tamaño</th>';
   echo '  <th>Tipo</th>';
   echo '  <th>Permisos</th>';
-  echo '  <th colspan="2">Acciones</th>';
   echo '</tr>';
 
   show_files($current_path);
 
   echo '</table>';
 } else {
+  show_file_options();
+
   //echo '<pre>' . file_get_contents($current_path) . '</pre>';
 
   $size = filesize($current_path);
@@ -60,20 +54,64 @@ if (is_dir($current_path)) {
 
 function show_dir_options() {
   global $current_path;
-  echo '<h2>Opciones de carpeta</h2>';
-  echo '<form action="' . $_SERVER['PHP_SELF'] . '?path=' . $current_path . '" method="POST">';
+  echo '<form id="options" action="submit.php?path=' . $current_path . '" method="POST">';
+  echo '  <h2>Opciones de carpeta</h2>';
+  echo '  <input type="hidden" name="path" value="' . $current_path . '">';
   echo '  <table>';
   echo '    <tr>';
-  echo '      <td><input type="radio" name="dir" value="create"> Crear subcarpeta:</td>';
+  echo '      <td>';
+  echo '        <input type="radio" name="dir_opt" value="create"> ';
+  echo '        <img src="http://localhost/icons/folder.sec.gif"> Crear subcarpeta:';
+  echo '      </td>';
   echo '      <td><input name="name" type="text" placeholder="Nombre"></td>';
   echo '    </tr>';
   echo '    <tr>';
-  echo '      <td><input type="radio" name="dir" value="tree"> ' . ($_SESSION['tree'] ? 'Mostrar solo carpeta actual' : 'Mostrar carpetas y subcarpetas') . '</td>';
+  echo '      <td>';
+  echo '        <input type="radio" name="dir_opt" value="tree"> ';
+  echo '        <img src="http://localhost/icons/index.gif"> ' . ($_SESSION['tree'] ? 'Mostrar solo carpeta actual' : 'Mostrar carpetas y subcarpetas');
+  echo '      </td>';
   echo '      <td></td>';
   echo '    </tr>';
   echo '    <tr>';
-  echo '      <td><input type="radio" name="dir" value="delete"> Borrar</td>';
+  echo '      <td>';
+  echo '        <input type="radio" name="dir_opt" value="delete"> ';
+  echo '        <img src="http://localhost/icons/burst.gif"> Borrar';
+  echo '      </td>';
   echo '      <td></td>';
+  echo '    </tr>';
+  echo '    <tr>';
+  echo '      <td colspan="2"><input type="submit" value="Enviar"></td>';
+  echo '    </tr>';
+  echo '  </table>';
+  echo '</form>';
+}
+
+function show_file_options() {
+  global $current_path;
+  echo '<form id="options" action="submit.php?path=' . $current_path . '" method="POST">';
+  echo '  <h2>Opciones de archivo</h2>';
+  echo '  <input type="hidden" name="path" value="' . $current_path . '">';
+  echo '  <table>';
+  echo '    <tr>';
+  echo '      <td>';
+  echo '        <input type="radio" name="file_opt" value="delete"> ';
+  echo '        <img src="http://localhost/icons/burst.gif"> Borrar';
+  echo '      </td>';
+  echo '      <td></td>';
+  echo '    </tr>';
+  echo '    <tr>';
+  echo '      <td>';
+  echo '        <input type="radio" name="file_opt" value="copy"> ';
+  echo '        <img src="http://localhost/icons/quill.gif"> Copiar:';
+  echo '      </td>';
+  echo '      <td><input name="copy" type="text" placeholder="Nombre de la copia"></td>';
+  echo '    </tr>';
+  echo '    <tr>';
+  echo '      <td>';
+  echo '        <input type="radio" name="file_opt" value="rename"> ';
+  echo '        <img src="http://localhost/icons/quill.gif"> Renombrar:';
+  echo '      </td>';
+  echo '      <td><input name="rename" type="text" placeholder="Nuevo nombre"></td>';
   echo '    </tr>';
   echo '    <tr>';
   echo '      <td colspan="2"><input type="submit" value="Enviar"></td>';
@@ -149,10 +187,7 @@ function show_files($path) {
     }
 
     echo '</pre></td>';
-    echo '<td><a href="borrar.php?path=' . $link .'">Borrar</a></td>';
-    echo '<td><a href="renombrar.php?path=' . $link . '">Renombrar</a></td>';
     echo '</tr>';
-
 
     if ($_SESSION['tree'] && $type == 'd') {
       show_files($link);
