@@ -9,9 +9,6 @@
 session_start();
 require_once('vars.php');
 
-var_dump($_POST);
-var_dump(pathinfo($_POST['path']));
-
 if (!isset($_POST['path'])) {
 	post_message('error', 'Error: no se ha especificado ninguna ruta.');
 	go_back($root);
@@ -24,16 +21,47 @@ if (!isset($_POST['path'])) {
 
 	if (!is_dir($_POST['path'])) {
 		post_message('error', 'Error: la ruta introducida no corresponde a un directorio.');
+		go_back_to($_POST['path']);
+	} elseif ($_POST['dir_opt'] == 'create') {
+		if (!isset($_POST['name']) || empty($_POST['name'])) {
+			post_message('error', 'Error: no se ha indicado un nombre de directorio.');
+		} else {
+			$dest = $_POST['path'] . '/' . $_POST['name'];
+			if (file_exists($dest)) {
+				post_message('error', 'Error: ya existe esa carpeta.');
+			} elseif (!mkdir($dest)) {
+				post_message('error', 'Error al tratar de crear la carpeta.');
+			} else {
+				post_message('success', 'La carpeta se ha creado con éxito');
+			}
+		}
+
+		go_back_to($_POST['path']);
+
 	} elseif ($_POST['dir_opt'] == 'tree') {
 		$_SESSION['tree'] = !$_SESSION['tree'];
-		header('Location: index.php');
+		header('Location: index.php?path=' . $_POST['path']);
+	} elseif ($_POST['dir_opt'] == 'delete') {
+		$parent = pathinfo($_POST['path'])['dirname'];
+		
+		$files = array_diff(scandir($_POST['path']), array('.','..'));
+
+		if (sizeof($files) > 0) {
+			post_message('error', 'Error al tratar de borrar la carpeta: No está vacía.');
+			go_back_to($_POST['path']);
+		} elseif (!rmdir($_POST['path'])) {
+			post_message('error', 'Error al tratar de borrar la carpeta.');
+			go_back_to($_POST['path']);
+		} else {
+			post_message('success', 'La carpeta se ha borrado con éxito');
+			go_back_to($parent);
+		}
 	} elseif ($_POST['dir_opt'] == 'back') {
 		header('Location: index.php?path=' . pathinfo($_POST['path'])['dirname']);
 	} else {
 		post_message('error', 'Error: opción desconocida.');
+		go_back_to($_POST['path']);
 	}
-
-	go_back_to($_POST['path']);
 
 } elseif (isset($_POST['file_opt'])) {
 
@@ -47,17 +75,15 @@ if (!isset($_POST['path'])) {
 	} elseif ($_POST['file_opt'] == 'delete') {
 		if (!unlink($_POST['path'])) {
 			post_message('error', 'Error al tratar de borrar el archivo.');
+			go_back_to($_POST['path']);
 		} else {
 			post_message('success', 'El archivo se ha borrado con éxito.');
+			go_back_to(pathinfo($_POST['path'])['dirname']);
 		}
-
-		go_back_to($_POST['path']);
-
 	} elseif ($_POST['file_opt'] == 'copy') {
 		if (!isset($_POST['copy']) || empty($_POST['copy'])) {
 			post_message('error', 'Error: se pretende copiar un archivo pero no se ha especificado ninguna ruta de destino.');
 		} else {
-			var_dump(pathinfo($_POST['copy']));
 			$dest = pathinfo($_POST['path'])['dirname'] . '/' . pathinfo($_POST['copy'])['basename'];
 			if (file_exists($dest)) {
 				post_message('error', 'Error: el archivo de destino ya existe.');
@@ -75,7 +101,6 @@ if (!isset($_POST['path'])) {
 			post_message('error', 'Error: se pretende renombrar un archivo pero no se ha especificado el nuevo nombre.');
 			go_back_to($_POST['path']);
 		} else {
-			var_dump(pathinfo($_POST['rename']));
 			$dest = pathinfo($_POST['path'])['dirname'] . '/' . pathinfo($_POST['rename'])['basename'];
 			if (file_exists($dest)) {
 				post_message('error', 'Error: ya existe un archivo en esa ruta.');

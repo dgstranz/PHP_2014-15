@@ -12,22 +12,15 @@ require_once('vars.php');
 // Para que se muestren los iconos predefinidos de WAMP
 // http://stackoverflow.com/questions/26607363/wampserver-icons-doesnt-work
 
-if (isset($_GET['path']) && !empty($_GET['path'])) {
-  // Impedir que se salga del directorio raíz
-  $current_path = pathinfo($_GET['path'])['dirname'] . '/' . pathinfo($_GET['path'])['basename'];
-  if (!preg_match('|^' . preg_quote($root) . '|', $current_path)) {
-    $current_path = $root;
-  }
-  if (preg_match('/\/\.\./', $current_path)) {
-    $current_path = $root;
-  }
+if (isset($_GET['path']) && !empty($_GET['path']) && realpath($_GET['path'])) {
+  $current_path = $_GET['path'];
 } else {
   $current_path = $root;
 }
 
-$short_path = str_replace($root, '', $current_path);
+$short_path = str_replace(realpath($root), '', realpath($current_path));
 
-echo '<h1>Ruta actual: ' . ($short_path ? $short_path : 'Raíz') . '</h1>';
+echo '<h1>Ruta actual: ' . ($short_path ? $short_path : 'Carpeta raíz') . '</h1>';
 
 if (is_dir($current_path)) {
   show_dir_options();
@@ -47,9 +40,11 @@ if (is_dir($current_path)) {
   show_file_options();
 
   $size = filesize($current_path);
-  $handle = fopen($current_path,"r");
-  echo '<pre>' . htmlentities(fread($handle, $size)) . '</pre>';
-  fclose($handle);
+  if ($size > 0) {
+    $handle = fopen($current_path, 'r');
+    echo '<pre>' . htmlentities(fread($handle, $size)) . '</pre>';
+    fclose($handle);
+  }
 }
 
 function show_dir_options() {
@@ -127,7 +122,7 @@ function show_file_options() {
   echo '    <tr>';
   echo '      <td>';
   echo '        <input type="radio" name="file_opt" value="back"> ';
-  echo '        <img src="http://localhost/icons/back.gif"> Volver atrás';
+  echo '        <img src="http://localhost/icons/back.gif"> Volver a la carpeta contenedora';
   echo '      </td>';
   echo '      <td></td>';
   echo '    </tr>';
