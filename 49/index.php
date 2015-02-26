@@ -7,25 +7,27 @@
 
 <?php
 session_start();
+require_once('vars.php');
+
 // Para que se muestren los iconos predefinidos de WAMP
 // http://stackoverflow.com/questions/26607363/wampserver-icons-doesnt-work
 
-// Inicializar variables de ruta
-$root = '..';
-
 if (isset($_GET['path']) && !empty($_GET['path'])) {
+  // Impedir que se salga del directorio raíz
   $current_path = pathinfo($_GET['path'])['dirname'] . '/' . pathinfo($_GET['path'])['basename'];
+  if (!preg_match('|^' . preg_quote($root) . '|', $current_path)) {
+    $current_path = $root;
+  }
+  if (preg_match('/\/\.\./', $current_path)) {
+    $current_path = $root;
+  }
 } else {
   $current_path = $root;
 }
 
-// Por defecto no se muestran las subcarpetas
-if (!isset($_SESSION['tree'])) {
-  $_SESSION['tree'] = false;
-}
+$short_path = str_replace($root, '', $current_path);
 
-
-echo '<h1>Ruta actual: ' . $current_path . '</h1>';
+echo '<h1>Ruta actual: ' . ($short_path ? $short_path : 'Raíz') . '</h1>';
 
 if (is_dir($current_path)) {
   show_dir_options();
@@ -44,16 +46,15 @@ if (is_dir($current_path)) {
 } else {
   show_file_options();
 
-  //echo '<pre>' . file_get_contents($current_path) . '</pre>';
-
   $size = filesize($current_path);
   $handle = fopen($current_path,"r");
-  echo '<pre>' . fread($handle, $size) . '</pre>';
+  echo '<pre>' . htmlentities(fread($handle, $size)) . '</pre>';
   fclose($handle);
 }
 
 function show_dir_options() {
   global $current_path;
+  global $root;
   echo '<form id="options" action="submit.php?path=' . $current_path . '" method="POST">';
   echo '  <h2>Opciones de carpeta</h2>';
   echo '  <input type="hidden" name="path" value="' . $current_path . '">';
@@ -79,6 +80,16 @@ function show_dir_options() {
   echo '      </td>';
   echo '      <td></td>';
   echo '    </tr>';
+
+  if ($root != $current_path) {
+    echo '    <tr>';
+    echo '      <td>';
+    echo '        <input type="radio" name="dir_opt" value="back"> ';
+    echo '        <img src="http://localhost/icons/back.gif"> Volver a la carpeta contenedora</a>';
+    echo '      </td>';
+    echo '    </tr>';
+  }
+
   echo '    <tr>';
   echo '      <td colspan="2"><input type="submit" value="Enviar"></td>';
   echo '    </tr>';
@@ -114,6 +125,13 @@ function show_file_options() {
   echo '      <td><input name="rename" type="text" placeholder="Nuevo nombre"></td>';
   echo '    </tr>';
   echo '    <tr>';
+  echo '      <td>';
+  echo '        <input type="radio" name="file_opt" value="back"> ';
+  echo '        <img src="http://localhost/icons/back.gif"> Volver atrás';
+  echo '      </td>';
+  echo '      <td></td>';
+  echo '    </tr>';
+  echo '    <tr>';
   echo '      <td colspan="2"><input type="submit" value="Enviar"></td>';
   echo '    </tr>';
   echo '  </table>';
@@ -121,9 +139,10 @@ function show_file_options() {
 }
 
 function show_files($path) {
-  require 'types.php';
+  global $abbr;
   global $root;
   global $current_path;
+
   $nesting = sizeof(explode('/', $path)) - sizeof(explode('/', $current_path));
 
   $handle = opendir($path);
@@ -142,7 +161,7 @@ function show_files($path) {
     unset($content[$key]);
   }
 
-  if (sizeof($content) == 0) {
+  if ($path == $current_path && sizeof($content) == 0) {
     echo '<tr><td colspan="4">Carpeta vacía</td></tr>';
     return 0;
   }
@@ -192,15 +211,6 @@ function show_files($path) {
     if ($_SESSION['tree'] && $type == 'd') {
       show_files($link);
     }
-  }
-
-  if ($path != $root && $path == $current_path) {
-    echo '<tr>';
-    echo '<td>';
-    echo '<img src="http://localhost/icons/back.gif">';
-    echo '<a href="' . $_SERVER['PHP_SELF'] . '?path=' . pathinfo($path)['dirname'] . '"> Volver atrás</a>';
-    echo '</td>';
-    echo '</tr>';
   }
 
   return sizeof($content);
