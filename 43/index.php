@@ -36,7 +36,7 @@ function formulario() {
 			<td><input type="email" name="email" value="' . (isset($_POST['email']) ? $_POST['email'] : '') . '"></td>
 		</tr>
 		<tr>
-			<td>Título</td>
+			<td>Asunto</td>
 			<td><input type="text" name="titulo" value="' . (isset($_POST['titulo']) ? $_POST['titulo'] : '') . '"></td>
 		</tr>
 		<tr>
@@ -64,7 +64,6 @@ function enviar_correo($nombre, $email, $titulo, $mensaje) {
 	$mail->Username = $mi_email;
 	$mail->Password = $mi_pass;
 
-	// Rellenas aquí los datos
 	$mail->SetFrom($mi_email, $mi_nombre);
 	$mail->AddReplyTo($mi_email, $mi_nombre);
 
@@ -72,12 +71,12 @@ function enviar_correo($nombre, $email, $titulo, $mensaje) {
 
 	$mail->Subject = $titulo;
 
+	$mail->IsHTML();
+
 	$mensaje = wordwrap($mensaje, 78, "\r\n");
 
+	$mail->AltBody = 'Lo sentimos, tu visor de correo no permite visualizar HTML.';
 	$mail->MsgHTML($mensaje);
-	$mail->AltBody = strip_tags($mensaje);
-
-	$cabeceras = 'X-Mailer: PHP/' . phpversion();
 
 	if($mail->Send()) {
 		echo '<p class="exito">Correo enviado</p>';
